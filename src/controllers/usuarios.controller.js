@@ -2,18 +2,19 @@ import { db } from "../config/db.js";
 import  bcrypt from "bcrypt";
 export async function adicionarusuarios(req, res) {
     try {
-        const { nome, email, senha, perfil, data_nascimento, celular, curso } = req.body;
-        if (!nome || !email || !senha || !perfil || !data_nascimento || !celular || !curso)
+        const { nome, email, senha, data_nascimento, celular, curso } = req.body;
+        if (!nome || !email || !senha || !data_nascimento || !celular || !curso)
             return res.status(400).json({ erro: "Campos obrigatórios" });
         const hashedSenha = await bcrypt.hash(senha, 10);
 
 
         await db.execute(
-            "INSERT INTO usuarios (nome, email, senha, perfil, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?, ?)",
-            [nome, email, hashedSenha, perfil, data_nascimento, celular, curso]
+            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?, ?)",
+            [nome, email, hashedSenha, data_nascimento, celular, curso]
         );
 
         res.json({ mensagem: "Usuário criado com sucesso!" });
+        
     } catch (err) {
         res.status(500).json({ erro: err.message });
     }
