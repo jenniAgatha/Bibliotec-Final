@@ -9,7 +9,7 @@ export async function adicionarusuarios(req, res) {
 
 
         await db.execute(
-            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?, ?)",
+            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?)",
             [nome, email, hashedSenha, data_nascimento, celular, curso]
         );
 
@@ -43,10 +43,10 @@ export async function obterusuario(req, res) {
 
 export async function atualizarusuario(req, res) {
     try {
-        const { nome, email, senha, perfil, data_nascimento, celular, curso } = req.body;
+        const { nome, email, senha,  data_nascimento, celular, curso } = req.body;
         await db.execute(
-            "UPDATE usuarios SET nome = ?, email = ?, senha = ?, perfil = ?, data_nascimento = ?, celular = ?, curso = ? WHERE id= ?",
-            [nome, email, senha, perfil, data_nascimento, celular, curso, req.params.id]
+            "UPDATE usuarios SET nome = ?, email = ?, senha = ?, data_nascimento = ?, celular = ?, curso = ? WHERE id= ?",
+            [nome, email, senha, data_nascimento, celular, curso, req.params.id]
         );
         res.json({ mensagem: "Usuário atualizado com sucesso!" });
     } catch (err) {
@@ -82,34 +82,33 @@ export async function loginUsuario(req, res) {
     }
 }
 
-// export async function esqueceuSenha(req, res) {
-    try {
-        const { email } = req.body; 
-        const [rows] = await db.execute("SELECT * FROM usuarios WHERE email = ?", [email]);
-        if (rows.length === 0) {
-            return res.status(404).json({ erro: "Usuário não encontrado" });
-        }
-        res.json({ mensagem: "Instruções para recuperação de senha enviadas para o email fornecido." });
-    } catch (err) {
-        res.status(500).json({ erro: err.message });
-    }
-        // Aqui você pode implementar a lógica para enviar um email de recuperação de senha
-// }
-
+// // export async function esqueceuSenha(req, res) {
+//     try {
+//         const { email } = req.body; 
+//         const [rows] = await db.execute("SELECT * FROM usuarios WHERE email = ?", [email]);
+//         if (rows.length === 0) {
+//             return res.status(404).json({ erro: "Usuário não encontrado" });
+//         }
+//         res.json({ mensagem: "Instruções para recuperação de senha enviadas para o email fornecido." });
+//     } catch (err) {
+//         res.status(500).json({ erro: err.message });
+//     }
+//         // Aqui você pode implementar a lógica para enviar um email de recuperação de senha
+// // }
 // export async function resetarSenha(req, res) {
-    try {
-        const { email, novaSenha } = req.body;  
-        const hashedSenha = await bcrypt.hash(novaSenha, 10);
-        const [result] = await db.execute(
-            "UPDATE usuarios SET senha = ? WHERE email = ?",
-            [hashedSenha, email]
-        );
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ erro: "Usuário não encontrado" });
-        }
-        res.json({ mensagem: "Senha atualizada com sucesso!" });
-    } catch (err) {
-        res.status(500).json({ erro: err.message });
-    } 
-        // Aqui você pode implementar a lógica para validar o token de reset e atualizar a senha
-// }
+//     try {
+//         const { email, novaSenha } = req.body;  
+//         const hashedSenha = await bcrypt.hash(novaSenha, 10);
+//         const [result] = await db.execute(
+//             "UPDATE usuarios SET senha = ? WHERE email = ?",
+//             [hashedSenha, email]
+//         );
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ erro: "Usuário não encontrado" });
+//         }
+//         res.json({ mensagem: "Senha atualizada com sucesso!" });
+//     } catch (err) {
+//         res.status(500).json({ erro: err.message });
+//     } 
+//         // Aqui você pode implementar a lógica para validar o token de reset e atualizar a senha
+// // }

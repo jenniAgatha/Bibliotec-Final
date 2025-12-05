@@ -10,40 +10,49 @@
  
 <div class="galaxia">
     <div class="FormCadastro">
-<form class="form">
-    <p class="title">Register </p>
-    <p class="message">Signup now and get full access to our app. </p>
-        <div class="flex">
-        <label>
-            <input class="input" type="text" placeholder="" required="">
-            <span>Firstname</span>
-        </label>
-
-        <label>
-            <input class="input" type="text" placeholder="" required="">
-            <span>Lastname</span>
-        </label>
-    </div>  
+        <form class="form" id="formCadastro">
+            <p class="title">Register</p>
+            <p class="message">Signup now and get full access to our app.</p>
             
-    <label>
-        <input class="input" type="email" placeholder="" required="">
-        <span>Email</span>
-    </label> 
-        
-    <label>
-        <input class="input" type="password" placeholder="" required="">
-        <span>Password</span>
-    </label>
-    <label>
-        <input class="input" type="password" placeholder="" required="">
-        <span>Confirm password</span>
-    </label>
-    <button class="submit">Submit</button>
-    <p class="signin">Already have an acount ? <a href="#">Signin</a> </p>
-    
+            <label>
+                <input class="input" type="text" id="nome" placeholder="" required>
+                <span>Nome Completo</span>
+            </label>
+
+            <label>
+                <input class="input" type="email" id="email" placeholder="" required>
+                <span>Email</span>
+            </label> 
+            
+            <label>
+                <input class="input" type="password" id="senha" placeholder="" required>
+                <span>Password</span>
+            </label>
+
+            <label>
+                <input class="input" type="date" id="data_nascimento" placeholder="" required>
+                <span>Data de Nascimento</span>
+            </label>
+
+            <label>
+                <input class="input" type="tel" id="celular" placeholder="" required>
+                <span>Celular</span>
+            </label>
+
+            <label>
+                <input class="input" type="text" id="curso" placeholder="" required>
+                <span>Curso</span>
+            </label>
+
+            <button type="submit" class="submit">Submit</button>
+            
+            <div id="mensagem"></div>
+            
+            <p class="signin">Já tem uma conta?<a href="TelaDeLogin.html">Login</a></p>
+        </form>
+    </div>
 </div>
-  
-</form>
-</div>
+
+<script src="cadastro.js"></script>
 </body>
 </html>
