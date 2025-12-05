@@ -4,52 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.TeLaDeCadastro.css">
-    <title>Tela De cadastro</title>
+    <title>Tela De Cadastro</title>
 </head>
 <body>
- <div class="galaxia">
-    <!-- estrelas -->
-    <span class="estrela"></span>
-    <span class="estrela"></span>
-    <span class="estrela"></span>
-    <span class="estrela"></span>
-    <span class="estrela"></span>
-    <span class="estrela"></span>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="clouds"></div>
 
-    <!-- formulário -->
-    <div class="FormCadastro">
+ <div class="FormCadastro">
         <form class="form">
             <p class="title">Register</p>
             <p class="message">Signup now and get full access to our app.</p>
-            <div class="flex">
-                <label>
+            <div class="flex" style="gap:12px; display:flex;">
+                <div class="form-control">
                     <input class="input" type="text" required="">
-                    <span>Firstname</span>
-                </label>
-                <label>
+                    <label>Firstname</label>
+                </div>
+                <div class="form-control">
                     <input class="input" type="text" required="">
-                    <span>Lastname</span>
-                </label>
-            </div>  
-            <label>
+                    <label>Lastname</label>
+                </div>
+            </div>
+            <div class="form-control">
                 <input class="input" type="email" required="">
-                <span>Email</span>
-            </label> 
-            <label>
+                <label>Email</label>
+            </div>
+            <div class="form-control">
                 <input class="input" type="password" required="">
-                <span>Password</span>
-            </label>
-            <label>
+                <label>Password</label>
+            </div>
+            <div class="form-control">
                 <input class="input" type="password" required="">
-                <span>Confirm password</span>
-            </label>
-            <button class="submit">Submit</button>
-            <p class="signin">Already have an account? <a href="#">Signin</a></p>
+                <label>Confirm password</label>
+            </div>
         </form>
     </div>
+
+    <script>
+    // Script: transforma cada label em spans com delay e gerencia estados
+    (function(){
+        function splitLabel(label){
+            const text = label.textContent.trim();
+            label.textContent = '';
+            Array.from(text).forEach((ch,i)=>{
+                const span = document.createElement('span');
+                span.textContent = ch;
+                span.style.transitionDelay = (i*50) + 'ms';
+                label.appendChild(span);
+            });
+        }
+
+        document.querySelectorAll('.form-control').forEach(fc => {
+            const input = fc.querySelector('input');
+            const label = fc.querySelector('label');
+            if(!label) return;
+            splitLabel(label);
+
+            function update(){
+                if(input.value && input.value.trim() !== '') fc.classList.add('filled');
+                else fc.classList.remove('filled');
+            }
+
+            input.addEventListener('focus', ()=> fc.classList.add('focused'));
+            input.addEventListener('blur', ()=> fc.classList.remove('focused'));
+            input.addEventListener('input', update);
+    
+            update();
+        });
+    })();
+    </script>
+
 </div>
 
-</form>
-</div>
+
 </body>
 </html>

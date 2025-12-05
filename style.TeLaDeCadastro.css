@@ -1,218 +1,106 @@
 
-body{
-margin: 0;
-overflow: hidden;
-background-color: black;
+* {
+    margin: 0;
+    padding: 0;
 }
+.title h1{
+    font-size: 36px;
+    font-family: 'Lato', sans-serif;
+    margin-top:10em;
+    margin-left: auto;
+    margin-right:auto;
+    text-align: center;
 
-.galaxia{
-    width: 100vw;
-    height: 100vw;
-    background: radial-gradient(circle at 50% 50%, rgba(80,0,120,0.4),transparent 60%),
-    radial-gradient(circle at 30% 70%, rgba(0,80,255,0.3), transparent 70%),
-    radial-gradient(circle at 70% 30%, rgba(255,0,150,0.25), transparent 80%),
-    black;
+    /* Stryling the text and giving it gradiant */
+    color:#ffffff;
+    background: -webkit-linear-gradient(#eee, #333);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+
+    /* Make sure text is infront of background images */
+    display:block;
     position: relative;
-    overflow: hidden;
+    z-index: 3;
 }
 
-.galaxia::depois{
-
-    content: "";
-    position: absolute;
-    width: 200%;
-    top: -50%;
-    left: -50%;
-    background-image: radial-gradient(white 1px,transparent 1px);
-    background-size: 3px 3px;
-    opacity: 0.7;
-    animation: movimento 100s linear infinite;
+@keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
 }
 
-.galaxia::antes{
-    background-size: 2px 2px;
-    opacity: 0.4;
-    animation-duration: 180s;
+@keyframes move-clouds-back {
+    from {background-position:0 0;}
+    to {background-position:10000px 0;}
 }
 
-@keyframes movimento {
-    0%{transform: translate(0,0);}
-    100%{transform: translate(500px,500px);}
-    
+.stars, .twinkling, .clouds {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  height:100%;
+  display:block;
 }
 
-.form {
- 
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 350px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 20px;
-  position: relative;
+.stars {
+  background: #000 url('imagens/stars.png') repeat top center;
+  z-index: 0;
 }
 
-
-.title {
-  font-size: 28px;
-  color: royalblue;
-  font-weight: 600;
-  letter-spacing: -1px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding-left: 30px;
+.twinkling{
+  background: transparent url('imagens/twinkling.png') repeat top center;
+  z-index: 1;
+  animation: move-twink-back 200s linear infinite;
 }
 
-.title::before,.title::after {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  left: 0px;
-  background-color: royalblue;
-}
-
-.title::before {
-  width: 18px;
-  height: 18px;
-  background-color: royalblue;
-}
-
-.title::after {
-  width: 18px;
-  height: 18px;
-  animation: pulse 1s linear infinite;
-}
-
-.message, .signin {
-  color: rgba(88, 87, 87, 0.822);
-  font-size: 14px;
-}
-
-.signin {
-  text-align: center;
-}
-
-.signin a {
-  color: royalblue;
-}
-
-.signin a:hover {
-  text-decoration: underline royalblue;
-}
-
-.flex {
-  display: flex;
-  width: 100%;
-  gap: 6px;
-}
-
-.form label {
-  position: relative;
-}
-
-.form label .input {
-  width: 100%;
-  padding: 10px 10px 20px 10px;
-  outline: 0;
-  border: 1px solid rgba(105, 105, 105, 0.397);
-  border-radius: 10px;
-}
-
-.form label .input + span {
-  position: absolute;
-  left: 10px;
-  top: 15px;
-  color: grey;
-  font-size: 0.9em;
-  cursor: text;
-  transition: 0.3s ease;
-}
-
-.form label .input:placeholder-shown + span {
-  top: 15px;
-  font-size: 0.9em;
-}
-
-.form label .input:focus + span,.form label .input:valid + span {
-  top: 0px;
-  font-size: 0.7em;
-  font-weight: 600;
-}
-
-.form label .input:valid + span {
-  color: green;
-}
-
-.submit {
-  border: none;
-  outline: none;
-  background-color: royalblue;
-  padding: 10px;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 16px;
-  transform: .3s ease;
-}
-
-.submit:hover {
-  background-color: rgb(56, 90, 194);
-  cursor: pointer;
-}
-
-@keyframes pulse {
-  from {
-    transform: scale(0.9);
-    opacity: 1;
-  }
-
-  to {
-    transform: scale(1.8);
-    opacity: 0;
-  }
+.clouds{
+  background: transparent url('imagens/clouds.png') repeat top center;
+  z-index: 2;
+  opacity: .4;
+  animation: move-clouds-back 200s linear infinite;
 }
 
 .FormCadastro{
-    display: flex;
-    align-items: center;
-    margin-left: 750px;
-    margin-top: 150px;
-    
-}.galaxia {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(120deg, #6d6be8, #9b8df1);
-    overflow: hidden;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
-.estrela {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
+.FormCadastro .form{
+  background: rgba(255,255,255,0.95);
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  max-width: 420px;
+  width: 100%;
 }
 
-/* posições das estrelas */
-.estrela:nth-child(1) { top: 20px; left: 40px; }
-.estrela:nth-child(2) { top: 120px; left: 200px; }
-.estrela:nth-child(3) { top: 300px; left: 150px; }
-.estrela:nth-child(4) { top: 80px; left: 350px; }
-.estrela:nth-child(5) { top: 220px; left: 500px; }
-.estrela:nth-child(6) { top: 50px; left: 600px; }
-
-/* formulário */
-.FormCadastro {
-    position: relative;
-    z-index: 1; /* garante que fique sobre as estrelas */
-    width: 400px;
-    margin: 50px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+.FormCadastro .title{
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
 }
+
+.FormCadastro .message{ color: #333; margin-bottom: 1rem; }
+
+.FormCadastro .input{ width:100%; padding:10px 12px; margin-top:6px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; }
+
+.FormCadastro .submit{ width:100%; padding:10px; border:none; background:#4A67DF; color:#fff; border-radius:8px; cursor:pointer; }
+
+/* Estilos para o rótulo animado (.form-control) */
+.form-control{ position:relative; margin-bottom:12px; }
+.form-control .input{ width:100%; padding:12px 12px; border-radius:6px; border:1px solid #ccc; background:transparent; box-sizing:border-box; }
+.form-control label{ position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#666; font-size:14px; display:inline-block; }
+.form-control label span{ display:inline-block; transition: transform .35s cubic-bezier(.2,.8,.2,1), color .25s ease, opacity .25s ease; }
+.form-control.focused label span, .form-control.filled label span{ transform: translateY(-22px); color:#4A67DF; opacity:1; }
+.form-control label span:nth-child(n){ opacity:0.95; }
+
+/* Ajuste visual quando o formulário estiver em blocos (dois campos lado a lado) */
+.flex .form-control{ flex:1; }
