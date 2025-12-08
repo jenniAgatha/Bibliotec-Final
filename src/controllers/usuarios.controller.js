@@ -1,23 +1,42 @@
 import { db } from "../config/db.js";
 import  bcrypt from "bcrypt";
+
 export async function adicionarusuarios(req, res) {
-    try {
-        const { nome, email, senha, data_nascimento, celular, curso } = req.body;
-        if (!nome || !email || !senha || !data_nascimento || !celular || !curso)
-            return res.status(400).json({ erro: "Campos obrigatórios" });
-        const hashedSenha = await bcrypt.hash(senha, 10);
+   try {
+    const { nome, email, senha, data_nascimento, celular, curso } = req.body;
 
+    // 🔎 1. Verificar se email já existe
+    const [emailExiste] = await db.execute(
+      "SELECT id FROM usuarios WHERE email = ?",
+      [email]
+    );
 
-        await db.execute(
-            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?)",
-            [nome, email, hashedSenha, data_nascimento, celular, curso]
-        );
-
-        res.json({ mensagem: "Usuário criado com sucesso!" });
-        
-    } catch (err) {
-        res.status(500).json({ erro: err.message });
+    if (emailExiste.length > 0) {
+      return res.status(400).json({ erro: "Email já cadastrado!" });
     }
+
+    // 🔎 2. Verificar se celular já existe
+    const [celularExiste] = await db.execute(
+      "SELECT id FROM usuarios WHERE celular = ?",
+      [celular]
+    );
+
+    if (celularExiste.length > 0) {
+      return res.status(400).json({ erro: "Celular já cadastrado!" });
+    }
+
+    // 🔐 3. Inserir o usuário se tudo estiver ok
+    await db.execute(
+      "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
+      [nome, email, senha, data_nascimento, celular, curso]
+    );
+
+    return res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar:", error);
+    return res.status(500).json({ erro: error.message });
+  }
 }
 
 export async function listarUsuarios(req, res) {
