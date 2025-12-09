@@ -8,7 +8,6 @@ import{
     loginUsuario,
     solicitarCodigoVerificacao,
     verificarCodigoECriarUsuario,
-    loginUsuario,
 } from"../controllers/usuarios.controller.js"
 const router = express.Router();
 

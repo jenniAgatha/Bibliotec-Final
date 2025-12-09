@@ -1,7 +1,11 @@
 const API_URL = 'http://localhost:3000';
 
-const form = document.getElementById('formCadastro');
+const formCadastro = document.getElementById('formCadastro');
+const formVerificacao = document.getElementById('formVerificacao');
 const mensagemDiv = document.getElementById('mensagem');
+const mensagemVerificacaoDiv = document.getElementById('mensagemVerificacao');
+
+let dadosUsuarioTemp = {};
 
 // ===== FUNÇÕES DE VALIDAÇÃO =====
 
@@ -12,15 +16,8 @@ function validarNome(nome) {
 
 function validarTelefone(telefone) {
   const numeros = telefone.replace(/\D/g, '');
-  
-  if (numeros.length < 10 || numeros.length > 11) {
-    return false;
-  }
-  
-  if (/^(\d)\1+$/.test(numeros)) {
-    return false;
-  }
-  
+  if (numeros.length < 10 || numeros.length > 11) return false;
+  if (/^(\d)\1+$/.test(numeros)) return false;
   return true;
 }
 
@@ -44,7 +41,7 @@ function validarDataNascimento(data) {
   }
   
   if (idade < 13) {
-    return { valido: false, mensagem: "Você precisa ter pelo menos 13 anos para se cadastrar" };
+    return { valido: false, mensagem: "Você precisa ter pelo menos 13 anos" };
   }
   
   if (idade > 120) {
@@ -54,39 +51,34 @@ function validarDataNascimento(data) {
   return { valido: true };
 }
 
-// ===== MÁSCARAS E BLOQUEIOS EM TEMPO REAL =====
+// ===== MÁSCARAS =====
 
-// Bloqueia números no campo nome
 const inputNome = document.getElementById('nome');
 inputNome.addEventListener('input', (e) => {
   e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
 });
 
-// Máscara de telefone
 const inputCelular = document.getElementById('celular');
 inputCelular.addEventListener('input', (e) => {
   let valor = e.target.value.replace(/\D/g, '');
-
-  // impede mais de 11 dígitos totais (2 DDD + 9 número)
-  if (valor.length > 11) {
-    valor = valor.slice(0, 11);
+  if (valor.length <= 11) {
+    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+    valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
   }
-
-  // aplica máscara
-  if (valor.length > 2) {
-    valor = valor.replace(/^(\d{2})(\d)/, '($1) $2');
-  }
-  if (valor.length > 7) {
-    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
-  }
-
   e.target.value = valor;
 });
 
+const inputCodigo = document.getElementById('codigoVerificacao');
+inputCodigo.addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5);
+});
 
-// ===== EVENTO DE SUBMIT =====
+// Define data máxima como hoje
+document.getElementById('data_nascimento').max = new Date().toISOString().split('T')[0];
 
-form.addEventListener('submit', async (e) => {
+// ===== ETAPA 1: SOLICITAR CÓDIGO =====
+
+formCadastro.addEventListener('submit', async (e) => {
   e.preventDefault();
   
   mensagemDiv.innerHTML = '';
@@ -98,90 +90,145 @@ form.addEventListener('submit', async (e) => {
   const celular = document.getElementById('celular').value.trim();
   const curso = document.getElementById('curso').value.trim();
   
-  // ===== VALIDAÇÕES =====
-  
-  // Valida se o nome tem apenas letras
+  // Validações
   if (!validarNome(nome)) {
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Nome deve conter apenas letras</p>';
     return;
   }
   
-  // Valida nome (mínimo 3 caracteres)
   if (nome.length < 3) {
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Nome deve ter pelo menos 3 caracteres</p>';
     return;
   }
   
-  // Valida email
   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!regexEmail.test(email)) {
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Email inválido</p>';
     return;
   }
   
-  // Valida senha (mínimo 6 caracteres)
   if (senha.length < 6) {
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Senha deve ter pelo menos 6 caracteres</p>';
     return;
   }
   
-  // Valida data de nascimento
   const validacaoData = validarDataNascimento(dataNascimento);
   if (!validacaoData.valido) {
     mensagemDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${validacaoData.mensagem}</p>`;
     return;
   }
   
-  // Valida telefone
   if (!validarTelefone(celular)) {
-    mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Número de telefone inválido. Use formato: (11) 99999-9999</p>';
+    mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Número de telefone inválido</p>';
     return;
   }
   
-  // Valida curso (mínimo 3 caracteres)
   if (curso.length < 3) {
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Curso deve ter pelo menos 3 caracteres</p>';
     return;
   }
   
-  // ===== ENVIA PARA API =====
-  
-  const dadosUsuario = {
-    nome: nome,
-    email: email,
-    senha: senha,
-    data_nascimento: dataNascimento,
-    celular: celular,
-    curso: curso
+  dadosUsuarioTemp = {
+    nome, email, senha, data_nascimento: dataNascimento, celular, curso
   };
 
-  console.log('📤 Enviando dados:', dadosUsuario);
+  console.log('📤 Solicitando código de verificação...');
+  mensagemDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">⏳ Enviando código...</p>';
 
   try {
-    const response = await fetch(`${API_URL}/usuarios`, {
+    const response = await fetch(`${API_URL}/usuarios/solicitar-codigo`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dadosUsuario)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dadosUsuarioTemp)
     });
 
     const resultado = await response.json();
-    console.log('📥 Resposta da API:', resultado);
 
     if (response.ok) {
       mensagemDiv.innerHTML = `<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">✅ ${resultado.mensagem}</p>`;
-      form.reset();
       
       setTimeout(() => {
-        window.location.href = 'TelaLogin.html';
-      }, 2000);
+        formCadastro.style.display = 'none';
+        formVerificacao.style.display = 'block';
+      }, 1500);
     } else {
-      mensagemDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${resultado.mensagem}Dados já existentes </p>`;
+      mensagemDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${resultado.erro}</p>`;
     }
 
   } catch (error) {
-    console.error('❌ Erro na requisição:', error);
+    console.error('❌ Erro:', error);
     mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Erro ao conectar com o servidor.</p>';
+  }
+});
+
+// ===== ETAPA 2: VERIFICAR CÓDIGO =====
+
+formVerificacao.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  mensagemVerificacaoDiv.innerHTML = '';
+  
+  const codigo = document.getElementById('codigoVerificacao').value.trim();
+  
+  if (codigo.length !== 5) {
+    mensagemVerificacaoDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Código deve ter 5 dígitos</p>';
+    return;
+  }
+
+  console.log('📤 Verificando código...');
+  mensagemVerificacaoDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">⏳ Verificando...</p>';
+
+  try {
+    const response = await fetch(`${API_URL}/usuarios/verificar-codigo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...dadosUsuarioTemp,
+        codigo: codigo
+      })
+    });
+
+    const resultado = await response.json();
+
+    if (response.ok) {
+      mensagemVerificacaoDiv.innerHTML = `<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">✅ ${resultado.mensagem}</p>`;
+      
+      setTimeout(() => {
+        window.location.href = 'Login.html';
+      }, 2000);
+    } else {
+      mensagemVerificacaoDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${resultado.erro}</p>`;
+    }
+
+  } catch (error) {
+    console.error('❌ Erro:', error);
+    mensagemVerificacaoDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Erro ao conectar com o servidor.</p>';
+  }
+});
+
+// ===== BOTÃO REENVIAR CÓDIGO =====
+
+document.getElementById('btnReenviarCodigo').addEventListener('click', async () => {
+  console.log('📤 Reenviando código...');
+  mensagemVerificacaoDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">⏳ Reenviando...</p>';
+  
+  try {
+    const response = await fetch(`${API_URL}/usuarios/solicitar-codigo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dadosUsuarioTemp)
+    });
+
+    const resultado = await response.json();
+
+    if (response.ok) {
+      mensagemVerificacaoDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">✅ Novo código enviado!</p>';
+    } else {
+      mensagemVerificacaoDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${resultado.erro}</p>`;
+    }
+
+  } catch (error) {
+    console.error('❌ Erro:', error);
+    mensagemVerificacaoDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Erro ao reenviar código.</p>';
   }
 });

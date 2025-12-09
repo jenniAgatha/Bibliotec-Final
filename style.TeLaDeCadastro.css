@@ -136,3 +136,21 @@
 .livro-subindo:nth-child(4) { left: 50%; animation-duration: 15s; animation-delay: 2s; }
 .livro-subindo:nth-child(5) { left: 65%; animation-duration: 12s; animation-delay: 1.8s; }
 .livro-subindo:nth-child(6) { left: 80%; animation-duration: 16s; animation-delay: 0.8s; }
+
+.submit {
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.submit:hover {
+  background-color: #45a049;
+}
