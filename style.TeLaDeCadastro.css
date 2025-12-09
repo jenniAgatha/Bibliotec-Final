@@ -20,11 +20,11 @@
     z-index: 0;
 }
 
-.twinkling{
+/* .twinkling{
     background: transparent url('imagens/twinkling.png') repeat top center;
     z-index: 1;
     animation: move-twink-back 200s linear infinite;
-}
+} */
 
 .clouds{
     background: transparent url('imagens/clouds.png') repeat top center;
@@ -33,7 +33,7 @@
     animation: move-clouds-back 200s linear infinite;
 }
 
-@keyframes move-twink-back {
+/* @keyframes move-twink-back {
     from {background-position:0 0;}
     to {background-position:-10000px 5000px;}
 }
@@ -41,7 +41,7 @@
 @keyframes move-clouds-back {
     from {background-position:0 0;}
     to {background-position:10000px 0;}
-}
+} */
 
 /* ===== FORMULÁRIO ===== */
 .FormCadastro{
