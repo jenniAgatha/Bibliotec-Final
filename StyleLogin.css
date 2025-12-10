@@ -545,7 +545,7 @@ button {
 
 /* botões */
 /* ==== BOTÕES DO CARROSSEL (NOVOS) ==== */
-..carousel-button {
+.carousel-button {
   position: relative;
   z-index: 10;
 

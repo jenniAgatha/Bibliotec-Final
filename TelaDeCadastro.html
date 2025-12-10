@@ -11,56 +11,83 @@
     <div class="twinkling"></div>
     <div class="clouds"></div>
 
- 
     <div class="livros-subindo-area">
-    <!-- Pode usar quantos livros quiser -->
-    <img src="imagens/cut8-removebg-preview (2).png" class="livro-subindo">
-    <img src="imagens/Flat_design_planet_collection___Free_Vector-removebg-preview (2).png" class="livro-subindo">
-    <img src="imagens/cut4-removebg-preview.png" class="livro-subindo">
-    <img src="imagens/cut5-removebg-preview.png" class="livro-subindo">
-    <img src="imagens/download__9_-removebg-preview.png" class="livro-subindo">
-    <img src="imagens/Flat_design_planet_collection___Free_Vector-removebg-preview (1).png" class="livro-subindo">
-    <img src="imagens/download__12_-removebg-preview.png" class="livro-subindo">
-</div>
+        <img src="imagens/cut8-removebg-preview (2).png" class="livro-subindo">
+        <img src="imagens/Flat_design_planet_collection___Free_Vector-removebg-preview (2).png" class="livro-subindo">
+        <img src="imagens/cut4-removebg-preview.png" class="livro-subindo">
+        <img src="imagens/cut5-removebg-preview.png" class="livro-subindo">
+        <img src="imagens/download__9_-removebg-preview.png" class="livro-subindo">
+        <img src="imagens/Flat_design_planet_collection___Free_Vector-removebg-preview (1).png" class="livro-subindo">
+    </div>
 
-
- <div class="FormCadastro">
-        <form class="form">
+    <div class="FormCadastro">
+        <!-- ETAPA 1: Formulário de Cadastro -->
+        <form class="form" id="formCadastro" style="display: block;">
             <p class="title">Register</p>
-            <p class="message">Signup now and get full access to our app.</p>
-            <div class="flex" style="gap:12px; display:flex;">
+            
             <div class="form-control">
-                    <label>Nome</label>
-                </div>
-                <div class="form-control">
-                </div>
+                <input class="input" type="text" id="nome" required="">
+                <label>Nome Completo</label>
             </div>
 
-                 <div class="form-control">
-                <input class="input" type="email" required="">
-                <label>Data de nascimento</label>
-            </div>
             <div class="form-control">
-                <input class="input" type="date" required="">
+                <input class="input" type="email" id="email" required="">
                 <label>Email</label>
             </div>
+
             <div class="form-control">
-                <input class="input" type="email" required="">
+                <input class="input" type="password" id="senha" required="">
                 <label>Senha</label>
-            </div>''
+            </div>
+
             <div class="form-control">
-                <input class="input" type="password" required="">
+                <input class="input" type="date" id="data_nascimento" required="">
+                <label>Data de Nascimento</label>
             </div>
 
-                      <div class="form-control">
-                        <label>Curso</label>
-                <input class="input" type="" required="">
-
-             <a href=Login.html> Já tem uma conta? Clique aqui</a>  
+            <div class="form-control">
+                <input class="input" type="tel" id="celular" required="">
+                <label>Celular</label>
             </div>
+
+            <div class="form-control">
+                <input class="input" type="text" id="curso" required="">
+                <label>Curso</label>
+            </div>
+
+            <button type="submit" class="submit">Enviar Código</button>
+            
+            <div id="mensagem"></div>
+            
+            <a href="Login.html" style="display: block; text-align: center; margin-top: 15px; color: #b27cf0;">
+                Já tem uma conta? Clique aqui
+            </a>
+        </form>
+
+        <!-- ETAPA 2: Formulário de Verificação (inicialmente oculto) -->
+        <form class="form" id="formVerificacao" style="display: none;">
+            <p class="title">Verificar Email</p>
+            <p style="text-align: center; color: #fff; margin-bottom: 20px;">
+                Digite o código de 5 dígitos enviado para seu email
+            </p>
+            
+            <div class="form-control">
+                <input class="input" type="text" id="codigoVerificacao" maxlength="5" required="">
+                <label>Código de Verificação</label>
+            </div>
+
+            <button type="submit" class="submit">Confirmar Cadastro</button>
+            <button type="button" class="submit" id="btnReenviarCodigo" 
+                    style="background: #666; margin-top: 10px;">
+                Reenviar Código
+            </button>
+            
+            <div id="mensagemVerificacao"></div>
         </form>
     </div>
 
+    <script src="cadastro.js"></script>
+    
     <script>
     (function(){
         function splitLabel(label){
@@ -74,29 +101,42 @@
             });
         }
 
-        document.querySelectorAll('.form-control').forEach(fc => {
-            const input = fc.querySelector('input');
-            const label = fc.querySelector('label');
-            if(!label) return;
-            splitLabel(label);
+        function initializeFormControls() {
+            document.querySelectorAll('.form-control').forEach(fc => {
+                const input = fc.querySelector('input');
+                const label = fc.querySelector('label');
+                if(!label) return;
+                
+                // Limpa labels anteriores antes de recriar
+                label.querySelectorAll('span').forEach(s => s.remove());
+                splitLabel(label);
 
-            function update(){
-                if(input.value && input.value.trim() !== '') fc.classList.add('filled');
-                else fc.classList.remove('filled');
-            }
+                function update(){
+                    if(input.value && input.value.trim() !== '') fc.classList.add('filled');
+                    else fc.classList.remove('filled');
+                }
 
-            input.addEventListener('focus', ()=> fc.classList.add('focused'));
-            input.addEventListener('blur', ()=> fc.classList.remove('focused'));
-            input.addEventListener('input', update);
-    
-            update();
+                input.addEventListener('focus', ()=> fc.classList.add('focused'));
+                input.addEventListener('blur', ()=> fc.classList.remove('focused'));
+                input.addEventListener('input', update);
+        
+                update();
+            });
+        }
+
+        // Inicializa na carga
+        initializeFormControls();
+
+        // Observa mudanças para reinicializar quando o formulário de verificação aparecer
+        const observer = new MutationObserver(() => {
+            initializeFormControls();
         });
+
+        const formVerificacao = document.getElementById('formVerificacao');
+        if (formVerificacao) {
+            observer.observe(formVerificacao, { attributes: true, attributeFilter: ['style'] });
+        }
     })();
     </script>
-
-
-
-
-
 </body>
 </html>
