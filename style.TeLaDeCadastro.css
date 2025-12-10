@@ -136,3 +136,4 @@
 .livro-subindo:nth-child(4) { left: 50%; animation-duration: 15s; animation-delay: 2s; }
 .livro-subindo:nth-child(5) { left: 65%; animation-duration: 12s; animation-delay: 1.8s; }
 .livro-subindo:nth-child(6) { left: 80%; animation-duration: 16s; animation-delay: 0.8s; }
+.livro-subindo:nth-child(7) {left: 63%; animation-duration: 30s; animation-delay: 0.15s;}
