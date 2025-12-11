@@ -26,39 +26,35 @@
             <p class="title">Registro</p>
             
             <div class="form-control">
-                <input type="text" id="nome" class="input" placeholder="Nome Completo">
+                <input type="text" id="nome" class="input" placeholder="Nome Completo" required>
             </div>
 
             <div class="form-control">
-                <input type="email" id="email" class="input" placeholder="Email">
+                <input type="email" id="email" class="input" placeholder="Email" required>
             </div>
 
             <div class="form-control">
-                <input type="date" id="DataDeNascimento" class="input" >
+                <input type="date" id="data_nascimento" class="input" required>
             </div>
        
-            
-         <div class="password-wrapper">
-    <input type="password" id="senha" class="input" placeholder="Senha">
-    <span id="toggleSenha" class="olho" aria-hidden="true"></span>
-</div>
-
+            <div class="password-wrapper">
+                <input type="password" id="senha" class="input" placeholder="Senha" required>
+                <span id="toggleSenha" class="olho" aria-hidden="true"></span>
+            </div>
 
             <div class="form-control">
-                <input class="input" type="tel" id="celular" required=""   placeholder="(11) 99999-9999"
-       pattern="\(\d{2}\)\s?\d{5}-\d{4}"
-       required>
-
+                <input class="input" type="tel" id="celular" placeholder="(11) 99999-9999" required>
             </div>
 
             <div class="form-control">
                 <select class="input" id="curso" required>
-                <option value="" disabled selected >Curso</option> 
-                <option value="Ads">ADS</option>
-                <option value="Adm">ADM</option>
-            </select>
+                    <option value="" disabled selected>Curso</option> 
+                    <option value="Ads">ADS</option>
+                    <option value="Adm">ADM</option>
+                </select>
+            </div>
 
-             <button type="submit" class="submit">Enviar Código</button>
+            <button type="submit" class="submit">Enviar Código</button>
             <div id="mensagem"></div>
             
             <a href="Login.html" style="display: block; text-align: center; margin-top: 15px; color: #fff;">
@@ -74,8 +70,7 @@
             </p>
             
             <div class="form-control">
-                <input class="input" type="text" id="codigoVerificacao" maxlength="5" required="">
-                <label>Código de Verificação</label>
+                <input class="input" type="text" id="codigoVerificacao" placeholder="Código de 5 dígitos" maxlength="5" required>
             </div>
 
             <button type="submit" class="submit">Confirmar Cadastro</button>
@@ -91,6 +86,25 @@
     <script src="cadastro.js"></script>
     
     <script>
+    // Toggle para mostrar/ocultar senha
+    const inputSenha = document.getElementById("senha");
+    const toggleSenha = document.getElementById("toggleSenha");
+
+    if (toggleSenha) {
+        toggleSenha.addEventListener("click", () => {
+            const tipo = inputSenha.getAttribute("type");
+
+            if (tipo === "password") {
+                inputSenha.setAttribute("type", "text");
+                toggleSenha.classList.add("show");
+            } else {
+                inputSenha.setAttribute("type", "password");
+                toggleSenha.classList.remove("show");
+            }
+        });
+    }
+
+    // Animações de labels (se você tiver)
     (function(){
         function splitLabel(label){
             const text = label.textContent.trim();
@@ -105,11 +119,10 @@
 
         function initializeFormControls() {
             document.querySelectorAll('.form-control').forEach(fc => {
-                const input = fc.querySelector('input');
+                const input = fc.querySelector('input, select');
                 const label = fc.querySelector('label');
                 if(!label) return;
                 
-                // Limpa labels anteriores antes de recriar
                 label.querySelectorAll('span').forEach(s => s.remove());
                 splitLabel(label);
 
@@ -121,15 +134,14 @@
                 input.addEventListener('focus', ()=> fc.classList.add('focused'));
                 input.addEventListener('blur', ()=> fc.classList.remove('focused'));
                 input.addEventListener('input', update);
+                input.addEventListener('change', update);
         
                 update();
             });
         }
 
-        // Inicializa na carga
         initializeFormControls();
 
-        // Observa mudanças para reinicializar quando o formulário de verificação aparecer
         const observer = new MutationObserver(() => {
             initializeFormControls();
         });
@@ -139,26 +151,6 @@
             observer.observe(formVerificacao, { attributes: true, attributeFilter: ['style'] });
         }
     })();
-
-
-
-const input = document.getElementById("senha");
-const toggle = document.getElementById("toggleSenha");
-
-toggle.addEventListener("click", () => {
-  const tipo = input.getAttribute("type");
-
-  if (tipo === "password") {
-    input.setAttribute("type", "text");
-    toggle.classList.add("show");  // troca o ícone
-  } else {
-    input.setAttribute("type", "password");
-    toggle.classList.remove("show"); // volta o ícone
-  }
-});
-</script>
-
-
-   
+    </script>
 </body>
 </html>

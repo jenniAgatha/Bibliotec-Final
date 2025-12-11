@@ -104,12 +104,22 @@ export async function loginUsuario(req, res) {
 }
 
 export async function solicitarCodigoVerificacao(req, res) {
+    console.log('📧 Solicitação de código recebida');
+    
     try {
         const { nome, email, senha, data_nascimento, celular, curso } = req.body;
 
-        // Validações
+        // Validações de campos obrigatórios
         if (!nome || !email || !senha || !data_nascimento || !celular || !curso) {
             return res.status(400).json({ erro: "Campos obrigatórios" });
+        }
+
+        // Valida formato do email
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(email)) {
+            return res.status(400).json({ 
+                erro: "Email inválido. Verifique o formato do email digitado." 
+            });
         }
 
         // Verifica se o email já está cadastrado
@@ -119,38 +129,62 @@ export async function solicitarCodigoVerificacao(req, res) {
         );
 
         if (usuarioExiste.length > 0) {
-            return res.status(409).json({ erro: "Email já cadastrado" });
+            return res.status(409).json({ 
+                erro: "Este email já está cadastrado! Use outro email ou faça login." 
+            });
         }
 
         // Gera código de 5 dígitos
         const codigo = gerarCodigoVerificacao();
+        console.log('🔢 Código gerado:', codigo);
         
-        // Define expiração (10 minutos a partir de agora)
+        // Define expiração (10 minutos)
         const expiraEm = new Date();
         expiraEm.setMinutes(expiraEm.getMinutes() + 10);
 
-        // Salva código no banco
+        // Tenta enviar o email ANTES de salvar no banco
+        console.log('📤 Tentando enviar email para:', email);
+        const emailEnviado = await enviarEmailVerificacao(email, codigo, nome);
+
+        if (!emailEnviado) {
+            console.error('❌ Falha ao enviar email');
+            return res.status(500).json({ 
+                erro: "Não foi possível enviar o email. Verifique se o endereço está correto e tente novamente." 
+            });
+        }
+
+        console.log('✅ Email enviado com sucesso!');
+
+        // Só salva no banco se o email foi enviado
         await db.execute(
             "INSERT INTO codigos_verificacao (email, codigo, expira_em) VALUES (?, ?, ?)",
             [email, codigo, expiraEm]
         );
 
-        // Envia email
-        const emailEnviado = await enviarEmailVerificacao(email, codigo, nome);
-
-        if (!emailEnviado) {
-            return res.status(500).json({ erro: "Erro ao enviar email. Tente novamente." });
-        }
-
-        // Retorna sucesso (SEM salvar o usuário ainda)
         res.json({ 
-            mensagem: "Código de verificação enviado para seu email!",
-            email: email  // Retorna o email para o frontend usar depois
+            mensagem: "Código de verificação enviado para seu email! Verifique sua caixa de entrada e spam.",
+            email: email
         });
 
     } catch (err) {
-        console.error('❌ Erro:', err);
-        res.status(500).json({ erro: err.message });
+        console.error('❌ Erro completo:', err);
+        
+        // Mensagem específica para erros de email
+        if (err.message && err.message.includes('ENOTFOUND')) {
+            return res.status(500).json({ 
+                erro: "Não foi possível conectar ao servidor de email. Tente novamente mais tarde." 
+            });
+        }
+        
+        if (err.message && err.message.includes('Invalid login')) {
+            return res.status(500).json({ 
+                erro: "Erro de configuração do servidor de email. Entre em contato com o suporte." 
+            });
+        }
+        
+        res.status(500).json({ 
+            erro: "Erro ao processar solicitação. Tente novamente." 
+        });
     }
 }
 

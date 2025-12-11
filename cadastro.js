@@ -135,30 +135,46 @@ formCadastro.addEventListener('submit', async (e) => {
   console.log('📤 Solicitando código de verificação...');
   mensagemDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">⏳ Enviando código...</p>';
 
-  try {
-    const response = await fetch(`${API_URL}/usuarios/solicitar-codigo`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dadosUsuarioTemp)
-    });
+  // Na parte do formCadastro.addEventListener('submit', ...
+try {
+  const response = await fetch(`${API_URL}/usuarios/solicitar-codigo`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosUsuarioTemp)
+  });
 
-    const resultado = await response.json();
+  const resultado = await response.json();
+  console.log('📥 Resposta do servidor:', resultado);
 
-    if (response.ok) {
-      mensagemDiv.innerHTML = `<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">✅ ${resultado.mensagem}</p>`;
-      
-      setTimeout(() => {
-        formCadastro.style.display = 'none';
-        formVerificacao.style.display = 'block';
-      }, 1500);
-    } else {
-      mensagemDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ ${resultado.erro}</p>`;
+  if (response.ok) {
+    mensagemDiv.innerHTML = `<p style="color: #4CAF50; text-align: center; margin-top: 15px; font-weight: bold;">✅ ${resultado.mensagem}</p>`;
+    
+    setTimeout(() => {
+      formCadastro.style.display = 'none';
+      formVerificacao.style.display = 'block';
+    }, 2000);
+  } else {
+    // Erros específicos
+    let mensagemErro = resultado.erro;
+    
+    if (response.status === 409) {
+      // Email já cadastrado
+      mensagemErro = `❌ ${resultado.erro}`;
+    } else if (response.status === 500) {
+      // Erro no envio de email
+      mensagemErro = `❌ ${resultado.erro}`;
+    } else if (response.status === 400) {
+      // Validação de campos
+      mensagemErro = `❌ ${resultado.erro}`;
     }
-
-  } catch (error) {
-    console.error('❌ Erro:', error);
-    mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Erro ao conectar com o servidor.</p>';
+    
+    mensagemDiv.innerHTML = `<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">${mensagemErro}</p>`;
   }
+
+} catch (error) {
+  console.error('❌ Erro na requisição:', error);
+  mensagemDiv.innerHTML = '<p style="color: #f44336; text-align: center; margin-top: 15px; font-weight: bold;">❌ Erro ao conectar com o servidor. Verifique sua conexão com a internet e tente novamente.</p>';
+}
 });
 
 // ===== ETAPA 2: VERIFICAR CÓDIGO =====
