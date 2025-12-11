@@ -52,21 +52,25 @@
     justify-content: center;
     min-height: 100vh;
     padding: 2rem;
+   
 }
 
 .FormCadastro .form{
-    background: rgba(255,255,255,0.95);
-    padding: 2rem 2.5rem;
+ background-color: rgba(240, 240, 243, 0.6);    padding: 2rem 2.5rem;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     max-width: 420px;
     width: 100%;
+    filter: blur();
+    
+
 }
 
 .FormCadastro .title{
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
+
 }
 
 .FormCadastro .message{ 
@@ -75,23 +79,41 @@
 }
 
 .FormCadastro .input{ 
-    width:100%; 
-    padding:10px 12px; 
-    margin-top:6px; 
-    margin-bottom:12px; 
-    border-radius:6px; 
-    border:1px solid #ccc; 
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px 25px;
+    background: transparent;
+    width: 100%;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.FormCadastro .input:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(47, 214, 203, 0.5) inset;
+    border-color: #000;
+    background: rgba(47, 214, 203, 0.08);
+}
+
+.FormCadastro .input:active {
+    box-shadow: 2px 2px 15px rgba(47, 214, 203, 0.5) inset;
 }
 
 .FormCadastro .submit{ 
     width:100%; 
     padding:10px; 
     border:none; 
-    background:#4A67DF; 
+    background:#26333D; 
     color:#fff; 
     border-radius:8px; 
     cursor:pointer; 
+
 }
+
+
+
 
 /* ===== LIVROS E PLANETAS FLUTUANDO ===== */
 .livro-subindo {
@@ -138,7 +160,7 @@
 .livro-subindo:nth-child(6) { left: 80%; animation-duration: 16s; animation-delay: 0.8s; }
 
 .submit {
-  background-color: #4CAF50;
+  background-color: #000;
   color: white;
   padding: 15px;
   border: none;
@@ -152,5 +174,38 @@
 }
 
 .submit:hover {
-  background-color: #45a049;
+ background-color: rgba(47, 214, 203, 0.5);
+
+}
+
+.olho {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background-image: url('https://img.icons8.com/ios-glyphs/30/visible.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.olho.show {
+  background-image: url('https://img.icons8.com/ios-glyphs/30/closed-eye.png');
+}
+
+/* Centraliza o ícone do olho verticalmente ao lado do input de senha */
+.password-wrapper{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-wrapper .input{
+    width: 100%;
+    padding-right: 48px; /* espaço para o ícone */
+    box-sizing: border-box;
 }
