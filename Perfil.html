@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Perfil — Bibliotec</title>
+  <link rel="stylesheet" href="perfil.css">
+</head>
+<body>
+  <main class="perfil-container">
+    <h1>Meu Perfil</h1>
+
+    <div class="card">
+      <div class="avatar-wrapper">
+        <img id="avatarPreview" src="imagens/Group (1).png" alt="avatar" class="avatar">
+      </div>
+
+      <form id="perfilForm">
+        <label class="file-label">
+          Escolher foto
+          <input id="avatarInput" type="file" accept="image/*">
+        </label>
+
+        <label class="field">
+          Nome
+          <input id="nomePerfil" type="text" placeholder="Seu nome">
+        </label>
+
+        <div class="actions">
+          <button type="button" id="saveBtn" class="btn">Salvar</button>
+          <button type="button" id="removeBtn" class="btn ghost">Remover foto</button>
+        </div>
+      </form>
+    </div>
+    <p class="hint">A foto fica salva no seu navegador (localStorage). Para envio ao servidor é necessário um backend.</p>
+  </main>
+
+  <script src="perfil.js"></script>
+</body>
+</html>
