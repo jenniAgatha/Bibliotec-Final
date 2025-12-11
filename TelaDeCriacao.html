@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Criar Livro — Bibliotec</title>
+    <link rel="stylesheet" href="TelaDeCriacao.css">
+  </head>
+  <body>
+    <header class="top">
+      <div class="container">
+        <h1>Criar Livro</h1>
+        <a href="TelaDoAdm.html" class="back">Voltar</a>
+      </div>
+    </header>
+
+    <main class="container main">
+      <section class="form-section">
+        <form id="bookForm" class="book-form">
+          <label>Título
+            <input type="text" id="title" required placeholder="Título do livro">
+          </label>
+
+          <label>Autor
+            <input type="text" id="author" required placeholder="Nome do autor">
+          </label>
+
+          <label>Ano
+            <input type="number" id="year" min="0" max="2100" placeholder="2025">
+          </label>
+
+          <label>Categoria
+            <select id="category">
+              <option value="">Selecione...</option>
+              <option>Ficção</option>
+              <option>Não-ficção</option>
+              <option>Romance</option>
+              <option>Biografia</option>
+              <option>Ciência</option>
+            </select>
+          </label>
+
+          <label>Descrição
+            <textarea id="description" rows="4" placeholder="Breve descrição"></textarea>
+          </label>
+
+          <label class="file-label">Capa (imagem)
+            <input type="file" id="coverInput" accept="image/*">
+          </label>
+
+          <div class="preview">
+            <img id="coverPreview" src="imagens/Group (1).png" alt="Pré-visualização" />
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn save">Salvar livro</button>
+            <button type="button" id="clearForm" class="btn ghost">Limpar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="list-section">
+        <h2>Livros criados</h2>
+        <div id="booksList" class="books-list"></div>
+      </section>
+    </main>
+
+    <script src="TelaDeCriacao.js"></script>
+  </body>
+</html>
