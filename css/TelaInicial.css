@@ -552,10 +552,10 @@ button {
   width: 60px;
   height: 60px;
 
-  border-radius: 100%;      /* ---- REDONDO ---- */
+     /* ---- REDONDO ---- */
   border: none;
 
-  background: rgba(80, 80, 80, 0.45); /* cinza fosco */
+  background:  rgba(47, 214, 203, 0.5);
   backdrop-filter: blur(4px);
 
   color: white;
