@@ -1,0 +1,217 @@
+/* nossosLivros.css - Estilos específicos para a página Nossos Livros */
+
+.maislidos {
+    text-align: center;
+    padding: 40px 0;
+    color: rgb(0, 0, 0);
+}
+
+.maislidos h1 {
+    font-size: 2.0em;
+    margin: 0;
+}
+
+.books-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.books-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.book-card {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.book-card:hover {
+    border-color: #667eea;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.book-card img {
+    width: 120px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin-bottom: 15px;
+}
+
+.book-info h3 {
+    color: #2d3748;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.book-info p {
+    color: #718096;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.book-genre {
+    display: inline-block;
+    background: #e6fffa;
+    color: #234e52;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #718096;
+    grid-column: 1 / -1;
+}
+
+.loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #667eea;
+    font-size: 1.2em;
+    grid-column: 1 / -1;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #204097;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+#bookDetails {
+    margin-bottom: 20px;
+}
+
+#bookDetails img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+#bookDetails h2 {
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+#bookDetails p {
+    color: #718096;
+    margin-bottom: 5px;
+}
+
+.reserve-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.reserve-btn:hover {
+    background: #5568d3;
+}
+
+
+.navbar {
+  width: 100%;
+  height: 80px;
+  background: var(--cinza);
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: "Inter", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* logo esquerda / resto direita */
+}
+
+.nav-logo img {
+  height: 45px;
+}
+
+/* LINKS + LOGIN AGRUPADOS */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* LINKS */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 50px;
+  margin-left: 1200px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: rgb(248, 248, 248);
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links li a:hover {
+  color: var(--ciano);
+  opacity: 70%;
+}
+
+
