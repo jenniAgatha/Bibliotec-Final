@@ -14,6 +14,7 @@ if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
 
 app.use(bodyParser.json({ limit: '10mb' })); // accept large base64 images
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 // serve uploaded images
 app.use('/uploads', express.static(UPLOAD_DIR));

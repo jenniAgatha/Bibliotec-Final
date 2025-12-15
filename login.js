@@ -31,13 +31,11 @@ form.addEventListener('submit', async (e) => {
       localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
 
       if (resultado.usuario.perfil === 'Aluno') {
-        alert('Login de aluno bem-sucedido!');
         setTimeout(() => {
           window.location.href = 'Login.html';  // Redireciona para a página desejada
         }, 1000);
       }
       else if (resultado.usuario.perfil === 'Admin') {
-        alert('Login de administrador bem-sucedido!');
         setTimeout(() => {
           window.location.href = 'TelaDoAdm.html';  // Redireciona para a página desejada
         }, 1000);

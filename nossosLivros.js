@@ -1,9 +1,11 @@
 // nossosLivros.js - Carrega e exibe os livros cadastrados
 
 const API_URL = 'http://localhost:3000/livros';
+let livroAtualId = null; // Para armazenar o ID do livro atual no modal
 
 // Função para mostrar detalhes do livro
 function mostrarDetalhes(id) {
+    livroAtualId = id; // Armazenar ID
     // Buscar detalhes do livro (assumindo que temos a lista carregada)
     // Para simplificar, buscar novamente ou armazenar em variável global
     fetch(`${API_URL}/${id}`)
@@ -34,10 +36,49 @@ function fecharModal() {
 }
 
 // Função para reservar livro
-function reservarLivro() {
-    // Implementar reserva - por enquanto, apenas alert
-    alert('Funcionalidade de reserva em desenvolvimento!');
-    fecharModal();
+async function reservarLivro() {
+    if (!livroAtualId) {
+        console.error('Nenhum livro selecionado');
+        return;
+    }
+
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (!usuario) {
+        alert('Faça login para reservar livros!');
+        return;
+    }
+
+    // Definir datas: retirada hoje, devolução em 15 dias
+    const hoje = new Date();
+    const devolucao = new Date();
+    devolucao.setDate(hoje.getDate() + 15);
+
+    const reserva = {
+        usuario_id: usuario.id,
+        livro_id: livroAtualId,
+        data_retirada: hoje.toISOString().split('T')[0],
+        data_devolucao: devolucao.toISOString().split('T')[0],
+        confirmado_email: false
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/reservas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reserva)
+        });
+
+        if (response.ok) {
+            alert('Reserva realizada com sucesso!');
+            fecharModal();
+        } else {
+            const error = await response.json();
+            alert('Erro: ' + error.error);
+        }
+    } catch (error) {
+        console.error('Erro ao reservar:', error);
+        alert('Erro ao conectar com o servidor');
+    }
 }
 
 // Event listeners para modal

@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   saveBtn.addEventListener('click', () => {
     const data = { name: nomeField.value || '', image: preview.src };
-    try{ localStorage.setItem('perfil:data', JSON.stringify(data)); alert('Perfil salvo no navegador.'); }
-    catch(e){ alert('Erro ao salvar: '+e.message) }
+    try{ localStorage.setItem('perfil:data', JSON.stringify(data)); }
+    catch(e){ console.error('Erro ao salvar perfil:', e.message) }
   });
 
   removeBtn.addEventListener('click', () => {
@@ -62,4 +62,47 @@ document.addEventListener('DOMContentLoaded', () => {
     nomeField.value = '';
     localStorage.removeItem('perfil:data');
   });
+
+  // Carregar reservas do usuário
+  carregarReservas();
 });
+
+// Função para carregar reservas
+async function carregarReservas() {
+  const reservasList = document.getElementById('reservasList');
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+  if (!usuario) {
+    reservasList.innerHTML = '<p>Faça login para ver suas reservas.</p>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/reservas?usuario_id=${usuario.id}`);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      reservasList.innerHTML = '';
+      data.forEach(reserva => {
+        const statusClass = reserva.confirmado_email ? 'confirmada' : 'pendente';
+        const statusText = reserva.confirmado_email ? 'Confirmada' : 'Pendente';
+
+        reservasList.innerHTML += `
+          <div class="reserva-item">
+            <div class="reserva-info">
+              <h3>${reserva.titulo_livro || 'Livro'}</h3>
+              <p>Retirada: ${new Date(reserva.data_retirada).toLocaleDateString('pt-BR')}</p>
+              <p>Devolução: ${new Date(reserva.data_devolucao).toLocaleDateString('pt-BR')}</p>
+            </div>
+            <span class="reserva-status ${statusClass}">${statusText}</span>
+          </div>
+        `;
+      });
+    } else {
+      reservasList.innerHTML = '<p>Você não tem reservas ativas.</p>';
+    }
+  } catch (error) {
+    console.error('Erro ao carregar reservas:', error);
+    reservasList.innerHTML = '<p>Erro ao carregar reservas.</p>';
+  }
+}

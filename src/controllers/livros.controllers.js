@@ -90,11 +90,12 @@ export async function adicionarlivros(req, res) {
         }
         
         // Insere o livro
+        const params = [titulo, autor, genero, ano_publicacao, editora, isbn, sinopse, caminho_capa].map(p => p === undefined ? null : p);
         const [result] = await db.execute(
             `INSERT INTO livros 
             (titulo, autor, genero, ano_publicacao, editora, isbn, sinopse, caminho_capa) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [titulo, autor, genero, ano_publicacao, editora, isbn, sinopse, caminho_capa]
+            params
         );
         
         console.log('✅ Livro criado com ID:', result.insertId);

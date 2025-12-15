@@ -2,10 +2,25 @@ import { db } from "../config/db.js";
 
 export async function listarReservas(req, res) {
   try {
-    const [rows] = await db.execute("SELECT * FROM reservas");
+    const { usuario_id } = req.query;
+    let query = `
+      SELECT r.*, l.titulo as titulo_livro, l.autor as autor_livro
+      FROM reservas r
+      JOIN livros l ON r.livro_id = l.id
+    `;
+    let params = [];
+
+    if (usuario_id) {
+      query += " WHERE r.usuario_id = ?";
+      params = [usuario_id];
+    }
+
+    query += " ORDER BY r.data_retirada DESC";
+
+    const [rows] = await db.execute(query, params);
     res.json(rows);
   } catch (error) {
-    res.status(500).json({ error: "Reserva não encontrada" });
+    res.status(500).json({ error: "Erro ao listar reservas" });
   }
 }
 
@@ -50,9 +65,10 @@ export async function criarReserva(req, res) {
     }
 
     // Insere a reserva
+    const params = [usuario_id, livro_id, data_retirada, data_devolucao, confirmado_email].map(p => p === undefined ? null : p);
     await db.execute(
       "INSERT INTO reservas (usuario_id, livro_id, data_retirada, data_devolucao, confirmado_email) VALUES (?, ?, ?, ?, ?)",
-      [usuario_id, livro_id, data_retirada, data_devolucao, confirmado_email]
+      params
     );
 
     // Diminui 1 no campo ativo (quantidade disponível)

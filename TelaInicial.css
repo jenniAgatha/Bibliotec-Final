@@ -28,6 +28,293 @@ header {
     /* box-sizing: border-box; */
     display: flex;
     align-items: center;
+}@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --cinza: #26333D; 
+    --azul: #4A67DF;
+    --ciano: #2FD6CB;
+    --cinza-claro: #E9F0EF;
+    --branco: #FFFFFF;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: "Montserrat", sans-serif;
+    overflow-x: hidden;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    width: 100%;
+    height: 80px;
+    background: var(--cinza);
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.nav-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between; /* Mantém logo na esquerda e links na direita */
+    align-items: center;
+}
+
+.nav-logo img {
+    height: 45px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 0; /* Removido margin-left fixo para não quebrar a responsividade */
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    gap: 50px;
+}
+
+.nav-links li a:hover {
+    color: var(--ciano);
+}
+
+.icon-plus {
+    width: 18px;
+    height: 18px;
+}
+
+.nav-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    object-fit: cover;
+    display: block;
+    transition: 0.3s;
+    margin-left: 50px;
+}
+
+.nav-avatar:hover {
+    border-color: var(--ciano);
+    transform: scale(1.05);
+}
+
+/* ===== SLOGAN ===== */
+.slogan {
+    position: relative;
+    width: 100%;
+    background-color: var(--cinza);
+    padding: 4rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.containerSlogan {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+.mulher {
+    height: 280px;
+    width: auto;
+    animation: flutuar 3s ease-in-out infinite;
+}
+
+.texto {
+    flex: 1 1 400px;
+    max-width: 550px;
+    color: var(--cinza-claro);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-left: 100px; /* deslocar .texto 100px para a direita */
+    transform: translateY(-100px); /* deslocar 100px para cima */
+}
+
+.texto h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: var(--branco);
+}
+
+.livro1, .livro2, .livro3 {
+    height: 120px;
+    width: auto;
+    animation: flutuar 4s ease-in-out infinite;
+}
+
+@keyframes flutuar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ===== CARROSSEL ===== */
+.maislidos {
+    text-align: center;
+    margin: 50px 0 20px;
+}
+
+.carrossel-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.caroussel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 10px;
+    max-width: 1100px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.caroussel::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.books {
+    flex: 0 0 220px; /* Mantém largura fixa para o JS calcular o movimento */
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    background: #fff;
+}
+
+.books img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.books:hover { transform: scale(1.05); }
+
+.carousel-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cinza);
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.3s;
+}
+
+.carousel-button:hover {
+    background: var(--ciano);
+}
+
+/* ===== CITAÇÕES ===== */
+.citacoes-duplas {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 60px auto;
+    width: 90%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+.citacao-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    flex: 1 1 450px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.autor-foto {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    background: var(--cinza);
+    color: #fff;
+    padding: 60px 5% 20px;
+    margin-top: 80px;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.socials img { width: 25px; filter: invert(1); margin-right: 15px; }
+
+/* ===== MEDIA QUERIES ===== */
+@media (max-width: 1100px) {
+    .navbar { padding: 0 20px; }
+    .nav-right { gap: 15px; }
+    .nav-links { gap: 15px; }
+    
+    .containerSlogan {
+        flex-direction: column;
+        text-align: center;
+    }
+    .texto {
+        margin-left: 0; /* volta ao alinhamento natural em telas menores */
+        transform: none; /* remove deslocamento vertical em telas pequenas */
+    }
+}
+
+@media (max-width: 768px) {
+    .citacao-card { flex: 1 1 100%; }
+}
+
+@media (max-width: 600px) {
+    .nav-right { gap: 10px; }
+    .nav-links span { display: none; } /* Esconde texto "Criar" no mobile */
+    .texto h1 { font-size: 1.8rem; }
 }
 
 .logo{
@@ -65,6 +352,7 @@ button {
     var(--btn-bg-1) 55%,
     var(--btn-bg-2) 90%
   ); 
+
   border: none;
   border-radius: var(--radii);
    color: var(--btn-bg-color); 

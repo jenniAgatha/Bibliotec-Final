@@ -14,6 +14,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Serve static files from the root directory
+app.use(express.static('../'));
+
 // Adiciona esse logger para debug (descomenta!)
 // app.use((req, res, next) => {
 //   console.log(new Date().toISOString(), req.method, req.url);

@@ -1,163 +1,279 @@
-const API_URL = 'http://localhost:3000/livros';
+ const API_URL = 'http://localhost:3000/livros';
 
-document.addEventListener('DOMContentLoaded', () => {
-  setupFormListeners();
-  carregarLivros();
-});
+ function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
 
-function setupFormListeners() {
-  const form = document.getElementById('bookForm');
-  const clearBtn = document.getElementById('clearForm');
-  const coverFile = document.getElementById('coverFile'); // corresponde ao HTML
-  const coverUrl = document.getElementById('coverUrl');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerText = message;
 
-  let coverDataUrl = '';
+  container.appendChild(toast);
 
-  function readFileAsDataURL(file) {
-    return new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result);
-      reader.onerror = () => rej(new Error('Erro ao ler arquivo'));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  if (coverFile) {
-    coverFile.addEventListener('change', async (e) => {
-      const f = e.target.files[0];
-      if (f) {
-        try {
-          coverDataUrl = await readFileAsDataURL(f);
-          // se tiver preview, atualiza
-          const preview = document.getElementById('coverPreview');
-          if (preview) preview.src = coverDataUrl;
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    });
-  }
-
-  if (coverUrl) {
-    coverUrl.addEventListener('input', (e) => {
-      // se o usuário inserir URL, prioriza ela
-      coverDataUrl = ''; // limpa base64 se estiver usando URL
-      const preview = document.getElementById('coverPreview');
-      if (preview) preview.src = e.target.value || preview.src;
-    });
-  }
-
-  if (clearBtn && form) {
-    clearBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      form.reset();
-      coverDataUrl = '';
-      const preview = document.getElementById('coverPreview');
-      if (preview) preview.src = '';
-    });
-  }
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      // validação local dos campos obrigatórios
-      const required = [
-        { id: 'title', name: 'Título' },
-        { id: 'author', name: 'Autor' }
-      ];
-      const missing = required.filter(f => !(document.getElementById(f.id)?.value || '').trim());
-      if (missing.length) {
-        showToast('Preencha: ' + missing.map(m => m.name).join(', '), 'error', 4500);
-        // foca o primeiro campo faltante
-        const firstMissing = document.getElementById(missing[0].id);
-        if (firstMissing) firstMissing.focus();
-        return;
-      }
-
-      const livro = {
-        titulo: document.getElementById('title')?.value || '',
-        autor: document.getElementById('author')?.value || '',
-        genero: document.getElementById('category')?.value || '',
-        sinopse: document.getElementById('description')?.value || '',
-        caminho_capa: (document.getElementById('coverUrl')?.value) || coverDataUrl || null
-      };
-      
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(livro)
-        });
-        if (!res.ok) {
-          const errBody = await res.text().catch(()=>res.statusText);
-          showToast('Erro ao cadastrar: ' + (errBody || res.statusText), 'error', 6000);
-          console.error('POST erro', res.status, errBody);
-          return;
-        }
-        showToast('Livro cadastrado com sucesso!', 'success', 3500);
-        form.reset();
-        coverDataUrl = '';
-        carregarLivros();
-      } catch (error) {
-        console.error('fetch error', error);
-        showToast('Falha ao conectar ao servidor. Verifique backend/CORS.', 'error', 6000);
-      }
-    });
-  }
-}
-
-async function carregarLivros() {
-  const container = document.getElementById('booksList');
-  if (!container) return;
-  container.innerHTML = '<div class="loading">Carregando livros...</div>';
-  try {
-    const res = await fetch(API_URL);
-    if (!res.ok) {
-      container.innerHTML = '<div class="error">Erro ao carregar livros</div>';
-      console.error('GET /livros erro', res.status);
-      return;
-    }
-    const livros = await res.json();
-    container.innerHTML = '';
-    if (!Array.isArray(livros) || livros.length === 0) {
-      container.innerHTML = '<div>Nenhum livro cadastrado</div>';
-      return;
-    }
-    livros.forEach(l => {
-      const card = document.createElement('div');
-      card.className = 'book-card-modern';
-      card.innerHTML = `
-        <img src="${l.caminho_capa || ''}" alt="${l.titulo}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2780%27 height=%27110%27%3E%3Crect fill=%27%23667eea%27 width=%2780%27 height=%27110%27/%3E%3C/text%3E%3C/svg%3E'">
-        <div class="book-info">
-          <h3>${escapeHtml(l.titulo || '')}</h3>
-          <p>${escapeHtml(l.autor || '')}</p>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  } catch (err) {
-    console.error('carregarLivros error', err);
-    container.innerHTML = '<div class="error"></div>';
-  }
-}
-
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-}
-
-/* função simples de toast */
-function showToast(message, type = 'info', duration = 4000) {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.textContent = message;
-  container.appendChild(t);
-  // forçar reflow para animar
-  requestAnimationFrame(() => t.classList.add('show'));
   setTimeout(() => {
-    t.classList.remove('show');
-    setTimeout(() => t.remove(), 300);
-  }, duration);
+    toast.remove();
+  }, 3500);
 }
+
+// Função para mostrar confirmação
+function showConfirm(message, callback) {
+  const modal = document.getElementById('confirmModal');
+  const messageEl = document.getElementById('confirmMessage');
+  const yesBtn = document.getElementById('confirmYes');
+  const noBtn = document.getElementById('confirmNo');
+
+  messageEl.textContent = message;
+  modal.classList.add('active');
+
+  const handleYes = () => {
+    modal.classList.remove('active');
+    yesBtn.removeEventListener('click', handleYes);
+    noBtn.removeEventListener('click', handleNo);
+    callback(true);
+  };
+
+  const handleNo = () => {
+    modal.classList.remove('active');
+    yesBtn.removeEventListener('click', handleYes);
+    noBtn.removeEventListener('click', handleNo);
+    callback(false);
+  };
+
+  yesBtn.addEventListener('click', handleYes);
+  noBtn.addEventListener('click', handleNo);
+}
+
+
+      // Carrega os livros ao abrir a página
+      document.addEventListener('DOMContentLoaded', () => {
+        carregarLivros();
+        setupFormListeners();
+      });
+
+      // Configurar listeners do formulário
+      function setupFormListeners() {
+        // Preview da imagem ao fazer upload
+        document.getElementById('coverInput').addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              document.getElementById('coverPreview').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Preview da imagem ao digitar URL
+        document.getElementById('coverUrl').addEventListener('input', function(e) {
+          const url = e.target.value;
+          if (url) {
+            document.getElementById('coverPreview').src = url;
+          }
+        });
+
+        // Preview da imagem ao fazer upload no edit
+        document.getElementById('edit_coverInput').addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              document.getElementById('edit_coverPreview').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Preview da imagem ao digitar URL no edit
+        document.getElementById('edit_coverUrl').addEventListener('input', function(e) {
+          const url = e.target.value;
+          if (url) {
+            document.getElementById('edit_coverPreview').src = url;
+          }
+        });
+
+        // Limpar formulário
+        document.getElementById('clearForm').addEventListener('click', function() {
+          document.getElementById('bookForm').reset();
+          document.getElementById('coverPreview').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='280' viewBox='0 0 200 280'%3E%3Crect fill='%23667eea' width='200' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='white'%3E📖%3C/text%3E%3C/svg%3E";
+        });
+      }
+
+      // Carregar livros
+      async function carregarLivros() {
+        const container = document.getElementById('booksList');
+        container.innerHTML = '<div class="loading">Carregando livros...</div>';
+
+        try {
+          const response = await fetch(API_URL);
+          const data = await response.json();
+
+          if (data.livros && data.livros.length > 0) {
+            container.innerHTML = '';
+            data.livros.forEach(livro => {
+              container.innerHTML += criarCardLivro(livro);
+            });
+          } else {
+            container.innerHTML = `
+              <div class="empty-state">
+                <h3>📚 Nenhum livro cadastrado</h3>
+                <p>Adicione seu primeiro livro usando o formulário ao lado!</p>
+              </div>
+            `;
+          }
+        } catch (error) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <h3>❌ Erro ao carregar livros</h3>
+              <p>${error.message}</p>
+              <p>Certifique-se de que a API está rodando!</p>
+            </div>
+          `;
+        }
+      }
+
+      // Criar card do livro
+      function criarCardLivro(livro) {
+        const capaUrl = livro.caminho_capa || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='110' viewBox='0 0 80 110'%3E%3Crect fill='%23667eea' width='80' height='110'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='40' fill='white'%3E📖%3C/text%3E%3C/svg%3E";
+
+        return `
+          <div class="book-card">
+            <img src="${capaUrl}" alt="${livro.titulo}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2780%27 height=%27110%27 viewBox=%270 0 80 110%27%3E%3Crect fill=%27%23667eea%27 width=%2780%27 height=%27110%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-size=%2740%27 fill=%27white%27%3E📖%3C/text%3E%3C/svg%3E'">
+            <div class="book-info">
+              <h3>${livro.titulo}</h3>
+              <p><strong>Autor:</strong> ${livro.autor}</p>
+              ${livro.ano_publicacao ? `<p><strong>Ano:</strong> ${livro.ano_publicacao}</p>` : ''}
+              ${livro.genero ? `<span class="book-genre">${livro.genero}</span>` : ''}
+            </div>
+            <div class="book-actions">
+              <button class="edit-btn" onclick='editarLivro(${JSON.stringify(livro).replace(/'/g, "&apos;")})'>✏️ Editar</button>
+              <button class="delete-btn" onclick="deletarLivro(${livro.id})">🗑️ Excluir</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Adicionar livro
+      document.getElementById('bookForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const livro = {
+          titulo: document.getElementById('title').value,
+          autor: document.getElementById('author').value,
+          genero: document.getElementById('category').value || null,
+          ano_publicacao: document.getElementById('year').value || null,
+          editora: document.getElementById('editora').value || null,
+          isbn: document.getElementById('isbn').value || null,
+          sinopse: document.getElementById('description').value || null,
+          caminho_capa: document.getElementById('coverUrl').value || null
+        };
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(livro)
+          });
+
+          if (response.ok) {
+            showToast('Livro adicionado com sucesso!', 'success');
+            document.getElementById('bookForm').reset();
+            document.getElementById('coverPreview').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='280' viewBox='0 0 200 280'%3E%3Crect fill='%23667eea' width='200' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='white'%3E📖%3C/text%3E%3C/svg%3E";
+            carregarLivros();
+          } else {
+            const error = await response.json();
+            showToast('Erro: ' + error.erro, 'error');
+          }
+        } catch (error) {
+          showToast('Erro ao adicionar livro: ' + error.message, 'error');
+        }
+      });
+
+      // Editar livro
+      function editarLivro(livro) {
+        document.getElementById('edit_id').value = livro.id;
+        document.getElementById('edit_title').value = livro.titulo;
+        document.getElementById('edit_author').value = livro.autor;
+        document.getElementById('edit_category').value = livro.genero || '';
+        document.getElementById('edit_year').value = livro.ano_publicacao || '';
+        document.getElementById('edit_editora').value = livro.editora || '';
+        document.getElementById('edit_isbn').value = livro.isbn || '';
+        document.getElementById('edit_description').value = livro.sinopse || '';
+        document.getElementById('edit_coverUrl').value = livro.caminho_capa || '';
+        
+        // Set preview
+        const capaUrl = livro.caminho_capa || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='280' viewBox='0 0 200 280'%3E%3Crect fill='%23667eea' width='200' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='white'%3E📖%3C/text%3E%3C/svg%3E";
+        document.getElementById('edit_coverPreview').src = capaUrl;
+        
+        document.getElementById('editModal').classList.add('active');
+      }
+
+      // Fechar modal de edição
+      function closeEditModal() {
+        document.getElementById('editModal').classList.remove('active');
+      }
+
+      // Atualizar livro
+      document.getElementById('editForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const id = document.getElementById('edit_id').value;
+        const livro = {
+          titulo: document.getElementById('edit_title').value,
+          autor: document.getElementById('edit_author').value,
+          genero: document.getElementById('edit_category').value || null,
+          ano_publicacao: document.getElementById('edit_year').value || null,
+          editora: document.getElementById('edit_editora').value || null,
+          isbn: document.getElementById('edit_isbn').value || null,
+          sinopse: document.getElementById('edit_description').value || null,
+          caminho_capa: document.getElementById('edit_coverUrl').value || null
+        };
+
+        try {
+          const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(livro)
+          });
+
+          if (response.ok) {
+            showToast('Livro atualizado com sucesso!', 'success');
+            closeEditModal();
+            carregarLivros();
+          } else {
+            const error = await response.json();
+            showToast('Erro: ' + error.erro, 'error');
+          }
+        } catch (error) {
+          showToast('Erro ao atualizar livro: ' + error.message, 'error');
+        }
+      });
+
+      // Deletar livro
+      async function deletarLivro(id) {
+        showConfirm('Tem certeza que deseja excluir este livro?', async (confirmed) => {
+          if (!confirmed) return;
+
+          try {
+            const response = await fetch(`${API_URL}/${id}`, {
+              method: 'DELETE'
+            });
+
+            if (response.ok) {
+              showToast('Livro excluído com sucesso!', 'success');
+              carregarLivros();
+            } else {
+              const error = await response.json();
+              showToast('Erro: ' + error.erro, 'error');
+            }
+          } catch (error) {
+            showToast('Erro ao excluir livro: ' + error.message, 'error');
+          }
+        });
+      }
+
+      // Fechar modal ao clicar fora
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.classList.remove('active');
+        }
+      }

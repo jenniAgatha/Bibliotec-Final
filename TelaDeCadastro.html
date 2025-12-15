@@ -53,9 +53,28 @@
             Já tem uma conta? Clique aqui
         </a>
     </form>
+
+    <!-- Formulário de Verificação de Código -->
+    <form class="form" id="formVerificacao" style="display: none;">
+        <div class="form-header">
+            <img src="imagens/Group (1).png" alt="Logo" class="form-top-img">
+        </div>
+
+        <h2 class="title">Verificar Código</h2>
+        <p class="subtitle">Digite o código de 5 dígitos enviado para seu email</p>
+        
+        <div class="form-control">
+            <input type="text" id="codigoVerificacao" class="input" placeholder="00000" maxlength="5" required>
+        </div>
+        
+        <button type="submit" class="submit">Verificar Código</button>
+        <div id="mensagemVerificacao"></div>
+
+        <a href="#" class="link-voltar" onclick="voltarParaCadastro()">Voltar</a>
+    </form>
 </div>
 
-    <script src="js/cadastro.js"></script>
+    <script src="cadastro.js"></script>
 
 
     

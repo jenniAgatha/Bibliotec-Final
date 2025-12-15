@@ -28,9 +28,10 @@ export async function adicionarusuarios(req, res) {
     }
 
     // 🔐 3. Inserir o usuário se tudo estiver ok
+    const params = [nome, email, senha, data_nascimento, celular, curso].map(p => p === undefined ? null : p);
     await db.execute(
       "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
-      [nome, email, senha, data_nascimento, celular, curso]
+      params
     );
 
     return res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
@@ -65,9 +66,10 @@ export async function obterusuario(req, res) {
 export async function atualizarusuario(req, res) {
     try {
         const { nome, email, senha,  data_nascimento, celular, curso } = req.body;
+        const params = [nome, email, senha, data_nascimento, celular, curso, req.params.id].map(p => p === undefined ? null : p);
         await db.execute(
             "UPDATE usuarios SET nome = ?, email = ?, senha = ?, data_nascimento = ?, celular = ?, curso = ? WHERE id= ?",
-            [nome, email, senha, data_nascimento, celular, curso, req.params.id]
+            params
         );
         res.json({ mensagem: "Usuário atualizado com sucesso!" });
     } catch (err) {
@@ -232,9 +234,10 @@ export async function verificarCodigoECriarUsuario(req, res) {
         // Código válido! Agora cria o usuário
         const hashedSenha = await bcrypt.hash(senha, 10);
 
+        const params = [nome, email, hashedSenha, data_nascimento, celular, curso].map(p => p === undefined ? null : p);
         await db.execute(
             "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
-            [nome, email, hashedSenha, data_nascimento, celular, curso]
+            params
         );
 
         // Marca o código como usado

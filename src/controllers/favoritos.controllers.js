@@ -79,9 +79,10 @@ export async function criarFavorito(req, res) {
 
         console.log('✅ Inserindo favorito...');
 
+        const params = [usuario_id, livro_id].map(p => p === undefined ? null : p);
         await db.execute(
             "INSERT INTO favoritos (usuario_id, livro_id) VALUES (?, ?)", 
-            [usuario_id, livro_id]
+            params
         );
         
         console.log('✅ FAVORITO CRIADO COM SUCESSO!');

@@ -401,3 +401,10 @@ if (btnReenviar) {
     }
   });
 }
+
+// Função para voltar ao formulário de cadastro
+function voltarParaCadastro() {
+  formVerificacao.style.display = 'none';
+  formCadastro.style.display = 'block';
+  mensagemVerificacaoDiv.innerHTML = '';
+}

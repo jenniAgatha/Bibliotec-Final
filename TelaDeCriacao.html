@@ -1,69 +1,174 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Criar Livro — Bibliotec</title>
   <link rel="stylesheet" href="TelaDeCriacao.css">
 </head>
+
 <body>
+  <header class="top">
+    <div class="container">
+      <h1>📚 Criar Livro</h1>
+      <a href="TelaDoAdm.html" class="back">← Voltar</a>
+    </div>
+  </header>
 
-<header class="top">
-
-    <img src="imagens/Group (1).png" alt="" class="logo">
-    <a href="TelaDoAdm.html" class="back-btn-modern">Voltar</a>
-  </div>
-</header>
-
-<main class="container">
-  <section class="form-section">
-    <form id="bookForm" class="book-form">
-      <div class="form-row">
+  <main>
+    <section class="form-section">
+      <h2>✏️ Novo Livro</h2>
+      <form id="bookForm" class="book-form">
         <label>Título
-          <input type="text" id="title" required placeholder="Ex: 1984">
+          <input type="text" id="title" required placeholder="Nome do livro">
         </label>
+
         <label>Autor
           <input type="text" id="author" required placeholder="Nome do autor">
         </label>
+
+        <label>Ano de Publicação
+          <input type="number" id="year" min="1000" max="2100" placeholder="2025">
+        </label>
+
         <label>Categoria
           <select id="category">
-            <option value="">Gênero...</option>
+            <option value="">Selecione...</option>
             <option>Ficção</option>
+            <option>Não-ficção</option>
             <option>Romance</option>
+            <option>Biografia</option>
+            <option>Ciência</option>
             <option>Terror</option>
             <option>Fantasia</option>
+            <option>Autoajuda</option>
           </select>
         </label>
-        <label>Upload da Capa
-          <input type="file" id="coverFile" accept="image/*" class="file-input">
-        </label>
-        <label>Ou URL da Capa
-          <input type="url" id="coverUrl" placeholder="https://...">
-        </label>
-      </div>
 
-      <div class="form-row second-row">
-        <label class="desc-label">Descrição do Livro
-          <textarea id="description" rows="1" placeholder="Escreva um breve resumo do livro..."></textarea>
+        <label>Editora
+          <input type="text" id="editora" placeholder="Nome da editora">
         </label>
-        <div class="actions">
-          <button type="submit" class="btn save">Salvar Livro</button>
-          <button type="button" id="clearForm" class="btn ghost">Limpar</button>
+
+        <label>ISBN
+          <input type="text" id="isbn" placeholder="ISBN do livro">
+        </label>
+
+        <label>Descrição
+          <textarea id="description" rows="4" placeholder="Breve descrição do livro"></textarea>
+        </label>
+
+        <label>URL da Capa
+          <input type="url" id="coverUrl" placeholder="https://exemplo.com/capa.jpg">
+        </label>
+
+        <label class="file-label">Ou fazer upload da capa
+          <input type="file" id="coverInput" accept="image/*">
+        </label>
+
+        <div class="preview">
+          <img id="coverPreview"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='280' viewBox='0 0 200 280'%3E%3Crect fill='%23667eea' width='200' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='white'%3E📖%3C/text%3E%3C/svg%3E"
+            alt="Pré-visualização" />
         </div>
+
+        <div class="actions">
+          <button type="submit" class="btn save">💾 Salvar livro</button>
+          <button type="button" id="clearForm" class="btn ghost">🗑️ Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <h2>📚 Livros cadastrados</h2>
+      <div id="booksList" class="books-list loading">
+        Carregando livros...
       </div>
-    </form>
-  </section>
+    </section>
+  </main>
 
-  <section class="list-section">
-    <h2> Livros Cadastrados</h2>
-    <div id="booksList" class="books-grid">
+  <!-- Modal Editar -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeEditModal()">×</button>
+      <h2>✏️ Editar Livro</h2>
+      <form id="editForm" class="book-form">
+        <input type="hidden" id="edit_id">
+
+        <label>Título
+          <input type="text" id="edit_title" required>
+        </label>
+
+        <label>Autor
+          <input type="text" id="edit_author" required>
+        </label>
+
+        <label>Ano de Publicação
+          <input type="number" id="edit_year" min="1000" max="2100">
+        </label>
+
+        <label>Categoria
+          <select id="edit_category">
+            <option value="">Selecione...</option>
+            <option>Ficção</option>
+            <option>Não-ficção</option>
+            <option>Romance</option>
+            <option>Biografia</option>
+            <option>Ciência</option>
+            <option>Terror</option>
+            <option>Fantasia</option>
+            <option>Autoajuda</option>
+          </select>
+        </label>
+
+        <label>Editora
+          <input type="text" id="edit_editora">
+        </label>
+
+        <label>ISBN
+          <input type="text" id="edit_isbn">
+        </label>
+
+        <label>Descrição
+          <textarea id="edit_description" rows="4"></textarea>
+        </label>
+
+        <label>URL da Capa
+          <input type="url" id="edit_coverUrl">
+        </label>
+
+        <label class="file-label">Ou fazer upload da capa
+          <input type="file" id="edit_coverInput" accept="image/*">
+        </label>
+
+        <div class="preview">
+          <img id="edit_coverPreview"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='280' viewBox='0 0 200 280'%3E%3Crect fill='%23667eea' width='200' height='280'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='white'%3E📖%3C/text%3E%3C/svg%3E"
+            alt="Pré-visualização" />
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn save">💾 Salvar alterações</button>
+          <button type="button" class="btn ghost" onclick="closeEditModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="livro.js"></script>
+
+  <div id="toastContainer"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-content">
+      <p id="confirmMessage"></p>
+      <div class="confirm-actions">
+        <button id="confirmYes" class="btn confirm-btn yes">Sim</button>
+        <button id="confirmNo" class="btn confirm-btn no">Não</button>
       </div>
-  </section>
-</main>
-
-<script src="livro.js"></script>
-
-<!-- container para notificações (toast) -->
-<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+    </div>
+  </div>
 </body>
+
 </html>
