@@ -1,54 +1,73 @@
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Evita rolagem */
-}
+/* ===== RESET ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { overflow-x: hidden; width: 100%; font-family: 'Poppins', sans-serif; }
 
-.galaxy-background {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    background: radial-gradient(ellipse at center, #0d0d0d 0%, #000000 100%); /* Gradiente para simular galáxia */
-    overflow: hidden;
+/* ===== FUNDO ===== */
+.stars, .twinkling, .clouds {
+  position: fixed; top:0; left:0; width:100%; height:100%; display:block;
 }
+.stars { background: #000 url('imagens/stars.png') repeat top center; z-index:0; }
+.clouds { background: transparent url('imagens/clouds.png') repeat top center; z-index:2; opacity:0.4; animation: move-clouds-back 200s linear infinite; }
 
-/* Estrelas geradas dinamicamente */
-.galaxy-background::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+/* ===== FORM MODERNO ===== */
+.FormCadastro {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 1.5rem;
+}
+.FormCadastro .form {
+    background-color: rgba(240, 240, 243, 0.6);
+    padding: 2rem 2rem; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    width: 100%; max-width: 420px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.FormCadastro .title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700; margin-bottom: 1.2rem; color: #000;
+    text-align: center;
+}.input {
+    color: #000;
+    border: none; /* remove a borda */
+    border-radius: 12px;
+    padding: 14px 20px;
     width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-        radial-gradient(2px 2px at 40px 70px, #fff, transparent),
-        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-        radial-gradient(1px 1px at 130px 80px, #fff, transparent),
-        radial-gradient(2px 2px at 160px 30px, #fff, transparent),
-        /* Adicione mais estrelas conforme necessário para densidade */
-        radial-gradient(1px 1px at 200px 100px, #fff, transparent),
-        radial-gradient(2px 2px at 250px 50px, #fff, transparent),
-        radial-gradient(1px 1px at 300px 80px, #fff, transparent),
-        radial-gradient(2px 2px at 350px 40px, #fff, transparent),
-        radial-gradient(1px 1px at 400px 70px, #fff, transparent);
-    background-repeat: no-repeat;
-    animation: twinkle 2s infinite alternate; /* Animação de piscar */
+    margin-bottom: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease, box-shadow 0.4s ease;
 }
 
-/* Animação de piscar */
-@keyframes twinkle {
-    0% { opacity: 1; }
-    100% { opacity: 0.3; }
+/* Brilho ao passar o mouse ou focar */
+.input:hover,
+.input:focus {
+    outline: none; /* remove contorno de foco padrão */
+    box-shadow: 0 0 15px rgba(47, 214, 203, 0.8);
+    backdrop-filter: blur(8px);
 }
 
-/* Estilo opcional para o texto */
-h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-family: Arial, sans-serif;
-    z-index: 1;
+.submit {
+    width: 100%; padding: 16px; border: none;
+    background: #000; color: #fff; font-weight: bold;
+    border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+}
+.submit:hover {
+    background-color: rgba(47,214,203,0.5);
+    box-shadow: 0 0 20px rgba(47,214,203,0.7);
+}
+.link-login {
+    display: block; text-align: center; margin-top: 14px; color:#fff; font-size: 14px;
+}
+
+/* ===== LIVROS FLUTUANTES ===== */
+.livro-subindo {
+    position: absolute; bottom: -300px; opacity:0; pointer-events:none; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
+}
+@keyframes flutuar-completo {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+  10% { opacity:1; }
+  40% { transform: translateY(-35vh) translateX(10px) rotate(6deg); }
+  70% { transform: translateY(-80vh) translateX(-14px) rotate(-6deg); }
+  90% { opacity:1; }
+  100% { transform: translateY(-120vh) translateX(0) rotate(0deg); opacity:0; }
 }

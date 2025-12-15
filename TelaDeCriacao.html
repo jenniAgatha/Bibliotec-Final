@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Criar Livro — Bibliotec</title>
+  <link rel="stylesheet" href="TelaDeCriacao.css">
+</head>
+<body>
+
+<header class="top">
+
+    <img src="imagens/Group (1).png" alt="" class="logo">
+    <a href="TelaDoAdm.html" class="back-btn-modern">Voltar</a>
+  </div>
+</header>
+
+<main class="container">
+  <section class="form-section">
+    <form id="bookForm" class="book-form">
+      <div class="form-row">
+        <label>Título
+          <input type="text" id="title" required placeholder="Ex: 1984">
+        </label>
+        <label>Autor
+          <input type="text" id="author" required placeholder="Nome do autor">
+        </label>
+        <label>Categoria
+          <select id="category">
+            <option value="">Gênero...</option>
+            <option>Ficção</option>
+            <option>Romance</option>
+            <option>Terror</option>
+            <option>Fantasia</option>
+          </select>
+        </label>
+        <label>Upload da Capa
+          <input type="file" id="coverFile" accept="image/*" class="file-input">
+        </label>
+        <label>Ou URL da Capa
+          <input type="url" id="coverUrl" placeholder="https://...">
+        </label>
+      </div>
+
+      <div class="form-row second-row">
+        <label class="desc-label">Descrição do Livro
+          <textarea id="description" rows="1" placeholder="Escreva um breve resumo do livro..."></textarea>
+        </label>
+        <div class="actions">
+          <button type="submit" class="btn save">Salvar Livro</button>
+          <button type="button" id="clearForm" class="btn ghost">Limpar</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="list-section">
+    <h2> Livros Cadastrados</h2>
+    <div id="booksList" class="books-grid">
+      </div>
+  </section>
+</main>
+
+<script src="livro.js"></script>
+
+<!-- container para notificações (toast) -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

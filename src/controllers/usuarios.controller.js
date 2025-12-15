@@ -1,23 +1,44 @@
 import { db } from "../config/db.js";
 import  bcrypt from "bcrypt";
+import { gerarCodigoVerificacao, enviarEmailVerificacao } from "../config/email.js";
+
+
 export async function adicionarusuarios(req, res) {
-    try {
-        const { nome, email, senha, data_nascimento, celular, curso } = req.body;
-        if (!nome || !email || !senha || !data_nascimento || !celular || !curso)
-            return res.status(400).json({ erro: "Campos obrigatórios" });
-        const hashedSenha = await bcrypt.hash(senha, 10);
+   try {
+    const { nome, email, senha, data_nascimento, celular, curso } = req.body;
 
+    // 🔎 1. Verificar se email já existe
+    const [emailExiste] = await db.execute(
+      "SELECT id FROM usuarios WHERE email = ?",
+      [email]
+    );
 
-        await db.execute(
-            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?,?, ?, ?)",
-            [nome, email, hashedSenha, data_nascimento, celular, curso]
-        );
-
-        res.json({ mensagem: "Usuário criado com sucesso!" });
-        
-    } catch (err) {
-        res.status(500).json({ erro: err.message });
+    if (emailExiste.length > 0) {
+      return res.status(400).json({ erro: "Email já cadastrado!" });
     }
+
+    // 🔎 2. Verificar se celular já existe
+    const [celularExiste] = await db.execute(
+      "SELECT id FROM usuarios WHERE celular = ?",
+      [celular]
+    );
+
+    if (celularExiste.length > 0) {
+      return res.status(400).json({ erro: "Celular já cadastrado!" });
+    }
+
+    // 🔐 3. Inserir o usuário se tudo estiver ok
+    await db.execute(
+      "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
+      [nome, email, senha, data_nascimento, celular, curso]
+    );
+
+    return res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar:", error);
+    return res.status(500).json({ erro: error.message });
+  }
 }
 
 export async function listarUsuarios(req, res) {
@@ -82,33 +103,150 @@ export async function loginUsuario(req, res) {
     }
 }
 
-// // export async function esqueceuSenha(req, res) {
-//     try {
-//         const { email } = req.body; 
-//         const [rows] = await db.execute("SELECT * FROM usuarios WHERE email = ?", [email]);
-//         if (rows.length === 0) {
-//             return res.status(404).json({ erro: "Usuário não encontrado" });
-//         }
-//         res.json({ mensagem: "Instruções para recuperação de senha enviadas para o email fornecido." });
-//     } catch (err) {
-//         res.status(500).json({ erro: err.message });
-//     }
-//         // Aqui você pode implementar a lógica para enviar um email de recuperação de senha
-// // }
-// export async function resetarSenha(req, res) {
-//     try {
-//         const { email, novaSenha } = req.body;  
-//         const hashedSenha = await bcrypt.hash(novaSenha, 10);
-//         const [result] = await db.execute(
-//             "UPDATE usuarios SET senha = ? WHERE email = ?",
-//             [hashedSenha, email]
-//         );
-//         if (result.affectedRows === 0) {
-//             return res.status(404).json({ erro: "Usuário não encontrado" });
-//         }
-//         res.json({ mensagem: "Senha atualizada com sucesso!" });
-//     } catch (err) {
-//         res.status(500).json({ erro: err.message });
-//     } 
-//         // Aqui você pode implementar a lógica para validar o token de reset e atualizar a senha
-// // }
+export async function solicitarCodigoVerificacao(req, res) {
+    console.log('📧 Solicitação de código recebida');
+    
+    try {
+        const { nome, email, senha, data_nascimento, celular, curso } = req.body;
+
+        // Validações de campos obrigatórios
+        if (!nome || !email || !senha || !data_nascimento || !celular || !curso) {
+            console.log('❌ Campos obrigatórios faltando');
+            return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
+        }
+
+        // Valida formato do email
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(email)) {
+            console.log('❌ Formato de email inválido');
+            return res.status(400).json({ 
+                erro: "Formato de email inválido. Verifique o email digitado." 
+            });
+        }
+
+        // Verifica se o email já está cadastrado
+        const [usuarioExiste] = await db.execute(
+            "SELECT id FROM usuarios WHERE email = ?",
+            [email]
+        );
+
+        if (usuarioExiste.length > 0) {
+            console.log('❌ Email já cadastrado:', email);
+            return res.status(409).json({ 
+                erro: "Este email já está cadastrado! Use outro email ou faça login." 
+            });
+        }
+
+        // Gera código de 5 dígitos
+        const codigo = gerarCodigoVerificacao();
+        console.log('🔢 Código gerado:', codigo, 'para email:', email);
+        
+        // ⚠️ IMPORTANTE: Tenta enviar o email ANTES de salvar no banco
+        console.log('📤 Tentando enviar email para:', email);
+        const emailEnviado = await enviarEmailVerificacao(email, codigo, nome);
+
+        // Se o email NÃO foi enviado, retorna erro IMEDIATAMENTE
+        if (!emailEnviado) {
+            console.error('❌ FALHA AO ENVIAR EMAIL - Email não será processado');
+            return res.status(500).json({ 
+                erro: "Não foi possível enviar o email. Verifique se o endereço de email está correto e tente novamente." 
+            });
+        }
+
+        console.log('✅ Email enviado com sucesso! Salvando código no banco...');
+
+        // Define expiração (10 minutos)
+        const expiraEm = new Date();
+        expiraEm.setMinutes(expiraEm.getMinutes() + 10);
+
+        // ✅ Só salva no banco SE o email foi enviado com sucesso
+        await db.execute(
+            "INSERT INTO codigos_verificacao (email, codigo, expira_em) VALUES (?, ?, ?)",
+            [email, codigo, expiraEm]
+        );
+
+        console.log('✅ Código salvo no banco com sucesso!');
+
+        res.status(200).json({ 
+            mensagem: "Código de verificação enviado para seu email! Verifique sua caixa de entrada e spam.",
+            email: email
+        });
+
+    } catch (err) {
+        console.error('❌ Erro completo na solicitação:', err);
+        
+        // Mensagens específicas para diferentes tipos de erro
+        if (err.code === 'ENOTFOUND') {
+            return res.status(500).json({ 
+                erro: "Não foi possível conectar ao servidor de email. Tente novamente mais tarde." 
+            });
+        }
+        
+        if (err.message && err.message.includes('Invalid login')) {
+            return res.status(500).json({ 
+                erro: "Erro de configuração do servidor de email. Entre em contato com o suporte." 
+            });
+        }
+
+        if (err.responseCode === 550 || err.responseCode === 553) {
+            return res.status(400).json({ 
+                erro: "Email não encontrado ou rejeitado pelo servidor. Verifique se o email está correto." 
+            });
+        }
+        
+        res.status(500).json({ 
+            erro: "Erro ao processar solicitação. Tente novamente." 
+        });
+    }
+}
+// NOVA FUNÇÃO: Verifica código e cria usuário
+export async function verificarCodigoECriarUsuario(req, res) {
+    try {
+        const { email, codigo, nome, senha, data_nascimento, celular, curso } = req.body;
+
+        // Validações
+        if (!email || !codigo || !nome || !senha || !data_nascimento || !celular || !curso) {
+            return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
+        }
+
+        // Busca o código no banco
+        const [codigosEncontrados] = await db.execute(
+            "SELECT * FROM codigos_verificacao WHERE email = ? AND codigo = ? AND usado = FALSE ORDER BY criado_em DESC LIMIT 1",
+            [email, codigo]
+        );
+
+        if (codigosEncontrados.length === 0) {
+            return res.status(400).json({ erro: "Código inválido ou expirado" });
+        }
+
+        const codigoRegistro = codigosEncontrados[0];
+
+        // Verifica se o código expirou
+        const agora = new Date();
+        const expiraEm = new Date(codigoRegistro.expira_em);
+
+        if (agora > expiraEm) {
+            return res.status(400).json({ erro: "Código expirado. Solicite um novo código." });
+        }
+
+        // Código válido! Agora cria o usuário
+        const hashedSenha = await bcrypt.hash(senha, 10);
+
+        await db.execute(
+            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
+            [nome, email, hashedSenha, data_nascimento, celular, curso]
+        );
+
+        // Marca o código como usado
+        await db.execute(
+            "UPDATE codigos_verificacao SET usado = TRUE WHERE id = ?",
+            [codigoRegistro.id]
+        );
+
+        res.json({ mensagem: "Usuário criado com sucesso! Faça login para continuar." });
+
+    } catch (err) {
+        console.error('❌ Erro:', err);
+        res.status(500).json({ erro: err.message });
+    }
+}

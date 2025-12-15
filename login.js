@@ -39,7 +39,7 @@ form.addEventListener('submit', async (e) => {
       else if (resultado.usuario.perfil === 'Admin') {
         alert('Login de administrador bem-sucedido!');
         setTimeout(() => {
-          window.location.href = 'admin.html';  // Redireciona para a página desejada
+          window.location.href = 'TelaDoAdm.html';  // Redireciona para a página desejada
         }, 1000);
       }
     } else {

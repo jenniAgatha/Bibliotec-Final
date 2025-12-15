@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: #0f1115;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding-bottom: 50px;
+}
+
+.container {
+    max-width: 1300px;
+    margin: 100px auto 0; /* desce o container 100px */
+    padding: 0 20px;
+}
+
+header {
+    height:90px;
+    width: auto;
+    background-color: #26333D;
+    padding: 0 40px;
+    /* box-sizing: border-box; */
+    display: flex;
+    align-items: center;
+}
+
+.logo{
+
+    height:40px ;
+    width: auto;
+    margin-right: auto;
+
+}
+
+
+.back-btn-modern {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+/* FORMULÁRIO HORIZONTAL */
+.form-section {
+    background: #1a1c22;
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid #2d303a;
+    margin-bottom: 40px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.second-row {
+    margin-bottom: 0;
+    border-top: 1px solid #2d303a;
+    padding-top: 20px;
+}
+
+label {
+    flex: 1;
+    min-width: 200px;
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.desc-label {
+    flex: 3; /* A descrição ocupa mais espaço horizontal */
+}
+
+input, select, textarea {
+    width: 100%;
+    background: #0f1115;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 12px 15px;
+    color: white;
+    margin-top: 8px;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 48px;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #2fd6cb;
+    box-shadow: 0 0 15px rgba(47, 214, 203, 0.2);
+    outline: none;
+}
+
+/* BOTÕES */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    height: 48px;
+    padding: 0 30px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.save { background: #26333D; color: white; }
+.save:hover { background: #2fd6cb; transform: translateY(-2px); }
+.ghost { background: #2d303a; color: #ccc; }
+.ghost:hover{background: #2fd6cb; transform: translateY(-2px);}
+
+/* GRID DE LIVROS */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.book-card-modern {
+    background: #1a1c22;
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid #2d303a;
+    display: flex;
+    gap: 15px;
+}
+
+.book-card-modern img {
+    width: 80px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.book-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+.book-info p { font-size: 0.85rem; color: #aaa; line-height: 1.4; }
+
+/* TOAST (notificações) */
+#toast-container {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  min-width: 220px;
+  max-width: 340px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  font-size: 0.95rem;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { border-left: 4px solid #2fd6cb; }
+.toast.error   { border-left: 4px solid #ff6b6b; }
+.toast.info    { border-left: 4px solid #4a67df; }

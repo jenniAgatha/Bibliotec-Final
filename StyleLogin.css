@@ -545,7 +545,7 @@ button {
 
 /* botões */
 /* ==== BOTÕES DO CARROSSEL (NOVOS) ==== */
-..carousel-button {
+.carousel-button {
   position: relative;
   z-index: 10;
 
@@ -653,3 +653,4 @@ width: 200px;
     50%  { transform: rotate(3deg); }
     100% { transform: rotate(0deg); }
 } */
+

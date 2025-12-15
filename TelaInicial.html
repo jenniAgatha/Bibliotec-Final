@@ -9,7 +9,7 @@
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="css/TelaInicial.css">
+    <link rel="stylesheet" href="TelaInicial.css">
     <link rel="icon" href="imagens/Group (1).png">
     <title>Bibliotec</title>
   </head>
@@ -29,6 +29,11 @@
           <li><a href="sobre.html">Sobre</a></li>
           <li><a href="contato.html">Contato</a></li>
         </ul>
+        <div class="nav-profile">
+          <a href="Perfil.html" class="nav-profile-link" title="Meu Perfil">
+            <img id="navAvatar" class="nav-avatar" src="imagens/Group (1).png" alt="perfil">
+          </a>
+        </div>
 <!-- 
         <div class="nav-login">
           <a href="TelaInicial.html">
@@ -86,6 +91,9 @@
 
     </div>
 
+    <!-- SEÇÃO DE GÊNEROS -->
+   
+
 
 <section class="citacoes-duplas">
     
@@ -108,8 +116,24 @@
 
 </section>
 
+
+
     <!-- SCRIPT -->
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+      // carregar avatar salvo no localStorage (mesma chave usada por Perfil.html)
+      (function(){
+        try{
+          const saved = localStorage.getItem('perfil:data');
+          if(!saved) return;
+          const data = JSON.parse(saved);
+          if(data && data.image){
+            const navAvatar = document.getElementById('navAvatar');
+            if(navAvatar) navAvatar.src = data.image;
+          }
+        }catch(e){ console.warn('erro ao carregar avatar nav', e); }
+      })();
+    </script>
 
 
 
