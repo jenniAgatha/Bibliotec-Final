@@ -1,11 +1,12 @@
 import { db } from "../config/db.js";
 import  bcrypt from "bcrypt";
 import { gerarCodigoVerificacao, enviarEmailVerificacao } from "../config/email.js";
+import nodemailer from 'nodemailer';
 
 
 export async function adicionarusuarios(req, res) {
    try {
-    const { nome, email, senha, data_nascimento, celular, curso } = req.body;
+    const { nome, email, senha, data_nascimento, celular, curso, perfil } = req.body;
 
     // 🔎 1. Verificar se email já existe
     const [emailExiste] = await db.execute(
@@ -28,9 +29,9 @@ export async function adicionarusuarios(req, res) {
     }
 
     // 🔐 3. Inserir o usuário se tudo estiver ok
-    const params = [nome, email, senha, data_nascimento, celular, curso].map(p => p === undefined ? null : p);
+    const params = [nome, email, senha, data_nascimento, celular, curso, perfil || 'Aluno'].map(p => p === undefined ? null : p);
     await db.execute(
-      "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)",
       params
     );
 
@@ -65,10 +66,27 @@ export async function obterusuario(req, res) {
 
 export async function atualizarusuario(req, res) {
     try {
-        const { nome, email, senha,  data_nascimento, celular, curso } = req.body;
-        const params = [nome, email, senha, data_nascimento, celular, curso, req.params.id].map(p => p === undefined ? null : p);
+        const { nome, email, senha, senhaAtual, data_nascimento, celular, curso, perfil } = req.body;
+
+        // Se está tentando alterar senha, verificar senha atual
+        if (senha) {
+            if (!senhaAtual) {
+                return res.status(400).json({ erro: "Senha atual é obrigatória para alterar a senha" });
+            }
+            const [userRows] = await db.execute("SELECT senha FROM usuarios WHERE id = ?", [req.params.id]);
+            if (userRows.length === 0) {
+                return res.status(404).json({ erro: "Usuário não encontrado" });
+            }
+            const senhaValida = await bcrypt.compare(senhaAtual, userRows[0].senha);
+            if (!senhaValida) {
+                return res.status(401).json({ erro: "Senha atual incorreta" });
+            }
+        }
+
+        const hashedSenha = senha ? await bcrypt.hash(senha, 10) : undefined;
+        const params = [nome, email, hashedSenha, data_nascimento, celular, curso, perfil, req.params.id].map(p => p === undefined ? null : p);
         await db.execute(
-            "UPDATE usuarios SET nome = ?, email = ?, senha = ?, data_nascimento = ?, celular = ?, curso = ? WHERE id= ?",
+            "UPDATE usuarios SET nome = ?, email = ?, senha = ?, data_nascimento = ?, celular = ?, curso = ?, perfil = ? WHERE id = ?",
             params
         );
         res.json({ mensagem: "Usuário atualizado com sucesso!" });
@@ -251,5 +269,72 @@ export async function verificarCodigoECriarUsuario(req, res) {
     } catch (err) {
         console.error('❌ Erro:', err);
         res.status(500).json({ erro: err.message });
+    }
+}
+
+// Função para gerar senha temporária
+function gerarSenhaTemporaria() {
+    return Math.random().toString(36).slice(-8); // 8 caracteres aleatórios
+}
+
+// Função para reset de senha
+export async function resetSenha(req, res) {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ erro: "Email é obrigatório" });
+        }
+
+        // Verifica se o usuário existe
+        const [usuario] = await db.execute("SELECT id, nome FROM usuarios WHERE email = ?", [email]);
+        if (usuario.length === 0) {
+            return res.status(404).json({ erro: "Usuário não encontrado" });
+        }
+
+        // Gera senha temporária
+        const senhaTemporaria = gerarSenhaTemporaria();
+        const hashedSenha = await bcrypt.hash(senhaTemporaria, 10);
+
+        // Atualiza a senha no banco
+        await db.execute("UPDATE usuarios SET senha = ? WHERE email = ?", [hashedSenha, email]);
+
+        // Envia email com a senha temporária
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'senaibibliotec@gmail.com',
+                pass: 'lbyi aqqd hrfa dfsx'
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        const mailOptions = {
+            from: 'senaibibliotec@gmail.com',
+            to: email,
+            subject: 'Reset de Senha - Bibliotec',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #4CAF50;">Reset de Senha</h2>
+                    <p>Olá ${usuario[0].nome},</p>
+                    <p>Sua senha foi resetada. Use a senha temporária abaixo para fazer login:</p>
+                    <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">
+                        ${senhaTemporaria}
+                    </div>
+                    <p style="color: #666;">Recomendamos alterar a senha após o login.</p>
+                    <p style="color: #666; font-size: 12px;">Se você não solicitou este reset, ignore este email.</p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.json({ mensagem: "Senha resetada com sucesso! Verifique seu email." });
+
+    } catch (err) {
+        console.error('❌ Erro ao resetar senha:', err);
+        res.status(500).json({ erro: "Erro interno do servidor" });
     }
 }

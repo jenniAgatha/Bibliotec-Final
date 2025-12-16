@@ -296,7 +296,7 @@ if (formVerificacao) {
         `;
 
         setTimeout(() => {
-          window.location.href = 'Login.html';
+          window.location.href = 'TelaInicial.html';
         }, 2000);
 
       } else {

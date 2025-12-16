@@ -69,6 +69,30 @@ body {
   width: 100%;
 }
 
+.user-icon {
+  cursor: pointer;
+  color: #cbd5f5;
+  font-size: 2.5rem;
+  transition: 0.3s;
+}
+
+.user-icon:hover {
+  color: #fff;
+}
+
+.logout {
+  color: #cbd5f5;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: 20px;
+  transition: 0.3s;
+}
+
+.logout:hover {
+  color: #fff;
+}
+
 /* =========================
    TÍTULO
 ========================= */
@@ -254,4 +278,21 @@ body {
     max-width: 220px;
     margin: auto;
   }
+}
+
+
+
+header .back {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--card);
+  transition: 0.3s;
+}
+
+
+header .back:hover {
+  background: var(--primary);
 }

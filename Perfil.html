@@ -8,6 +8,7 @@
 </head>
 <body>
   <main class="perfil-container">
+    <a href="nossosLivros.html" class="back">← Voltar</a>
     <h1>Meu Perfil</h1>
 
     <div class="card">
@@ -23,17 +24,52 @@
 
         <label class="field">
           Nome
-          <input id="nomePerfil" type="text" placeholder="Seu nome">
+          <input id="nomePerfil" type="text" placeholder="Seu nome" required>
+        </label>
+
+        <label class="field">
+          Email
+          <input id="emailPerfil" type="email" placeholder="Seu email" readonly>
+        </label>
+
+        <label class="field">
+          Senha Atual
+          <input id="senhaAtual" type="password" placeholder="Digite sua senha atual">
+        </label>
+
+        <label class="field">
+          Nova Senha
+          <input id="novaSenha" type="password" placeholder="Digite a nova senha">
+        </label>
+
+        <label class="field">
+          Confirmar Nova Senha
+          <input id="confirmarSenha" type="password" placeholder="Confirme a nova senha">
+        </label>
+
+        <label class="field">
+          Data de Nascimento
+          <input id="dataNascimento" type="date">
+        </label>
+
+        <label class="field">
+          Celular
+          <input id="celular" type="text" placeholder="Seu celular">
+        </label>
+
+        <label class="field">
+          Curso
+          <input id="curso" type="text" placeholder="Seu curso">
         </label>
 
         <div class="actions">
-          <button type="button" id="saveBtn" class="btn">Salvar</button>
+          <button type="submit" id="saveBtn" class="btn">Salvar</button>
           <button type="button" id="removeBtn" class="btn ghost">Remover foto</button>
+          <button type="button" onclick="logout()" class="btn ghost">Sair</button>
         </div>
       </form>
     </div>
-    <p class="hint">A foto fica salva no seu navegador (localStorage). Para envio ao servidor é necessário um backend.</p>
-
+  
     <!-- Seção de Reservas -->
     <div class="card reservas-card">
       <h2>Minhas Reservas</h2>
@@ -44,5 +80,6 @@
   </main>
 
   <script src="perfil.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

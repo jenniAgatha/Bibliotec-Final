@@ -44,7 +44,10 @@ async function reservarLivro() {
 
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     if (!usuario) {
-        alert('Faça login para reservar livros!');
+        Swal.fire({
+            text: 'Faça login para reservar livros!',
+            icon: 'warning'
+        });
         return;
     }
 
@@ -69,15 +72,24 @@ async function reservarLivro() {
         });
 
         if (response.ok) {
-            alert('Reserva realizada com sucesso!');
+            Swal.fire({
+                text: 'Reserva realizada com sucesso!',
+                icon: 'success'
+            });
             fecharModal();
         } else {
             const error = await response.json();
-            alert('Erro: ' + error.error);
+            Swal.fire({
+                text: 'Erro: ' + error.error,
+                icon: 'error'
+            });
         }
     } catch (error) {
         console.error('Erro ao reservar:', error);
-        alert('Erro ao conectar com o servidor');
+        Swal.fire({
+            text: 'Erro ao conectar com o servidor',
+            icon: 'error'
+        });
     }
 }
 
@@ -117,7 +129,7 @@ async function carregarLivros() {
         } else {
             container.innerHTML = `
                 <div class="empty-state">
-                    <h3>📚 Nenhum livro cadastrado</h3>
+                    <h3> Nenhum livro cadastrado</h3>
                     <p>Os livros aparecerão aqui quando forem adicionados.</p>
                 </div>
             `;
@@ -125,7 +137,7 @@ async function carregarLivros() {
     } catch (error) {
         container.innerHTML = `
             <div class="empty-state">
-                <h3>❌ Erro ao carregar livros</h3>
+                <h3> Erro ao carregar livros</h3>
                 <p>${error.message}</p>
                 <p>Certifique-se de que a API está rodando!</p>
             </div>
@@ -148,4 +160,11 @@ function criarCardLivro(livro) {
             </div>
         </div>
     `;
+}
+
+// Função para logout
+function logout() {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('perfil:data');
+    window.location.href = 'TelaDeLogin.html';
 }

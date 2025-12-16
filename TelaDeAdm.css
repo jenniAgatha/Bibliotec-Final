@@ -83,6 +83,11 @@ body {
     height: 18px;
 }
 
+.nav-profile {
+    display: flex;
+    align-items: center;
+}
+
 .nav-avatar {
     width: 42px;
     height: 42px;
@@ -96,6 +101,18 @@ body {
 .nav-avatar:hover {
     border-color: var(--ciano);
     transform: scale(1.05);
+}
+
+.logout-btn {
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    color: #ff4444;
 }
 
 /* ===== SLOGAN ===== */
@@ -283,4 +300,76 @@ body {
     .nav-right { gap: 10px; }
     .nav-links span { display: none; } /* Esconde texto "Criar" no mobile */
     .texto h1 { font-size: 1.8rem; }
+}
+
+.logout {
+  color: #cbd5f5;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: 20px;
+  transition: 0.3s;
+}
+
+.logout:hover {
+  color: #fff;
+}
+
+/* ===== CRIAR USUÁRIO ===== */
+.criar-usuario {
+  padding: 4rem 2rem;
+  background: var(--cinza)
+}
+
+.criar-usuario .container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--branco);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.criar-usuario h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--cinza);
+  font-size: 1.8rem;
+}
+
+.criar-usuario .form {
+  display: flex;
+  flex-direction: column;
+}
+
+.criar-usuario label {
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: var(--cinza);
+}
+
+.criar-usuario input,
+.criar-usuario select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.criar-usuario .btn-submit {
+  background: var(--azul);
+  color: var(--branco);
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: 0.3s;
+}
+
+.criar-usuario .btn-submit:hover {
+  background: var(--ciano);
 }

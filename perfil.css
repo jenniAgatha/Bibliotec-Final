@@ -1,25 +1,27 @@
-:root{ --bg:#f5f7fb; --card:#fff; --accent:#4A67DF; --muted:#666 }
+:root{ --bg:#0f172a; --card:#1f2933; --accent:#4A67DF; --muted:#cbd5f5; --branco:#ffffff; --cinza:#26333D }
 *{box-sizing:border-box;font-family:Inter, system-ui, Arial}
-body{margin:0;background:var(--bg);color:#222}
+body{margin:0;background: linear-gradient(135deg, var(--bg), #020617);color:var(--branco)}
+.back{display:inline-block;margin-bottom:20px;color:var(--accent);text-decoration:none;font-weight:500}
+.back:hover{text-decoration:underline}
 .perfil-container{max-width:760px;margin:48px auto;padding:20px}
-.perfil-container h1{margin:0 0 18px}
-.card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.06);display:flex;gap:24px;align-items:center}
-.avatar-wrapper{width:140px;height:140px;flex:0 0 140px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#eee}
+.perfil-container h1{margin:0 0 18px; background: linear-gradient(135deg, #6366f1, #22c55e); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;}
+.card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.3);display:flex;gap:24px;align-items:center}
+.avatar-wrapper{width:140px;height:140px;flex:0 0 140px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#333}
 .avatar{width:100%;height:100%;object-fit:cover;display:block}
 .file-label{display:inline-block;padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;cursor:pointer;margin-bottom:12px}
 .file-label input{display:none}
 .field{display:block;margin-bottom:12px}
-.field input{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd}
+.field input{width:100%;padding:10px;border-radius:8px;border:1px solid #555; background: #333; color: #fff}
 .actions{display:flex;gap:10px}
 .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-.btn.ghost{background:transparent;color:var(--muted);border:1px solid #ddd}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid #555}
 .hint{margin-top:12px;color:var(--muted);font-size:13px}
 
-.reservas-card{margin-top:24px}
-.reservas-card h2{margin:0 0 16px;font-size:1.2rem}
+.reservas-card{margin-top:24px; background:var(--card);border-radius:12px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.reservas-card h2{margin:0 0 16px;font-size:1.2rem; color: var(--branco)}
 .reservas-list{display:flex;flex-direction:column;gap:12px}
-.reserva-item{background:#f9f9f9;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center}
-.reserva-info h3{margin:0;font-size:1rem}
+.reserva-item{background:#333;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center; color: var(--branco)}
+.reserva-info h3{margin:0;font-size:1rem; color: var(--branco)}
 .reserva-info p{margin:4px 0 0;color:var(--muted);font-size:0.9rem}
 .reserva-status{background:#4CAF50;color:#fff;padding:4px 8px;border-radius:4px;font-size:0.8rem}
 .reserva-status.pendente{background:#ff9800}

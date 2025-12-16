@@ -16,33 +16,32 @@
  
   <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-      <div class="nav-container">
+<nav class="navbar">
+  <div class="nav-container">
+    
+    <div class="nav-logo">
+      <img src="imagens/Group 106 (1).png" alt="Bibliotec">
+    </div>
 
-        <div class="nav-logo">
-          <img src="imagens/Group 106 (1).png" alt="Bibliotec">
-        </div>
-
-        <ul class="nav-links">
-        <a href="nossosLivros.html">
-        <span>Livros</span>
-        </a>  
-        </ul>
-        <div class="nav-profile">
-          <a href="Perfil.html" class="nav-profile-link" title="Meu Perfil">
-            <img id="navAvatar" class="nav-avatar" src="imagens/Group (1).png" alt="perfil">
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li>
+          <a href="nossosLivros.html" class="link-plus">
+            <img src="imagens/estante-com-fout-books.png" alt="Criar" class="icon-plus">
+            <span>Livros</span>
           </a>
-        </div>
-<!-- 
-        <div class="nav-login">
-          <a href="TelaInicial.html">
-            <button class="btn">Login</button>
-          </a>
-        </div> -->
+        </li>
+        <li><a href="Perfil.html"></a></li>
+      </ul>
 
+      <div class="nav-profile">
+        <img id="navAvatar" class="nav-avatar" src="imagens/Group (1).png" alt="perfil">
+        <span onclick="logout()" class="logout-btn">Sair</span>
       </div>
-    </nav>
+    </div>
+
+  </div>
+</nav>
 
 
 
@@ -91,9 +90,6 @@
 
     </div>
 
-    <!-- SEÇÃO DE GÊNEROS -->
-   
-
 
 <section class="citacoes-duplas">
     
@@ -116,10 +112,8 @@
 
 </section>
 
-
-
     <!-- SCRIPT -->
-    <script src="js/script.js"></script>
+    <script src="JS/TelaDeAdm.js"></script>
     <script>
       // carregar avatar salvo no localStorage (mesma chave usada por Perfil.html)
       (function(){
@@ -186,7 +180,58 @@
     <img class="vaso" src="vaso.png">
     <img class="folhas" src="imagens/Green_plants_flowe_illustration_in_the_pot___Premium_Vector-removebg-preview-removebg-preview.png">
 </div> -->
+<!-- Adicione este script antes do fechamento do </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+  function logout() {
+    // Toast de confirmação
+    Swal.fire({
+      title: 'Deseja sair?',
+      text: "Você será desconectado do sistema",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#667eea',
+      cancelButtonColor: '#ef4444',
+      confirmButtonText: 'Sim, sair',
+      cancelButtonText: 'Cancelar',
+      background: '#1e293b',
+      color: '#f1f5f9',
+      customClass: {
+        popup: 'custom-popup',
+        confirmButton: 'custom-confirm-btn',
+        cancelButton: 'custom-cancel-btn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Toast de sucesso ao sair
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Até logo!',
+          text: 'Saindo do sistema...',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          background: '#667eea',
+          color: '#ffffff',
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        }).then(() => {
+          // Limpar dados salvos
+          localStorage.clear();
+          sessionStorage.clear();
+          
+          // Redirecionar para a tela de login
+          window.location.href = 'TelaDeLogin.html';
+        });
+      }
+    });
+  }
+</script>
 
     
   </body>

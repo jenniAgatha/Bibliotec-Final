@@ -12,9 +12,9 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
  
-    <link rel="stylesheet" href="../css/nossosLivros.css">
+    <link rel="stylesheet" href="css/nossosLivros.css">
     <link rel="icon" href="imagens/Group (1).png">
-    <title>Bibliotec</title>
+    <title>Minhas Reservas - Bibliotec</title>
 </head>
 
 <body>
@@ -24,37 +24,29 @@
             <div class="nav-logo">
                 <img src="imagens/Group 106 (1).png" alt="Bibliotec">
             </div>
-
+           
             <ul class="nav-links">
                 <li><a href="TelaInicial.html">Início</a></li>
                 <li><a href="contato.html">Contato</a></li>
-                <li><a href="Reservas.html">Reservas</a></li>
+                <li><a href="nossosLivros.html">Livros</a></li>
             </ul>
             <div class="user-icon" onclick="window.location.href='Perfil.html'">
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
+            <a href="#" onclick="logout()" class="logout">Sair</a>
         </div>
     </nav>
 
     <div class="maislidos">
-    <h1>Nossos Livros</h1>
+    <h1>Reservas</h1>
   </div>
     <div class="books-container">
-        <div class="books-list" id="booksList">
-            <!-- Os livros serão inseridos aqui dinamicamente -->
+        <div class="books-list" id="reservasList">
+            <!-- As reservas serão inseridas aqui dinamicamente -->
         </div>
     </div>
 
-    <!-- Modal para detalhes do livro -->
-    <div id="bookModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="bookDetails">
-                <!-- Detalhes do livro serão inseridos aqui -->
-            </div>
-            <button id="reserveBtn" class="reserve-btn">Reservar Livro</button>
-        </div>
-    </div>          
-    <script src="nossosLivros.js"></script>
+    <script src="reservas.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+</body>
+</html>

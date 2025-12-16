@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Esboço</title>
+    <title>Login</title>
     <link rel="stylesheet" href="style.TelaLogin.css">
+        <link rel="icon" href="imagens/Group (1).png">
+
 </head>
 <body>
 
     <div class="container">
 
         <div class="left">
-            <img src="" alt="Ilustração">
+            <img src="imagens/download (9).jpg" alt="Ilustração">
         </div>
 
         <div class="right">
@@ -22,7 +24,7 @@
                 </a>
             </p>
 
-            <h1>Bem vindo!</h1>
+            <h1>Bem vindo a Bibliotec!</h1>
             <p class="subtitle">Entre com sua conta</p>
 
             <form id="formLogin">
@@ -33,8 +35,10 @@
                 <label>Senha</label>
                 <input type="password" id="senha" placeholder="Digite sua senha" required>
 
-                <button type="submit" class="login-btn" a href="Login.html">Login</button>
+                <button type="submit" class="login-btn" a href="TelaInicial.html">Login</button>
             </form>
+
+            <p class="forgot-password"><a href="#" id="forgotPasswordLink">Esqueceu a senha?</a></p>
 
             <div id="mensagem"></div>
 
@@ -42,6 +46,22 @@
 
     </div>
 
+    <!-- Modal para reset de senha -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Reset de Senha</h2>
+            <p>Digite seu email para receber uma senha temporária.</p>
+            <form id="resetForm">
+                <label>Email</label>
+                <input type="email" id="resetEmail" placeholder="email@exemplo.com" required>
+                <button type="submit" class="login-btn">Enviar</button>
+            </form>
+            <div id="resetMensagem"></div>
+        </div>
+    </div>
+
     <script src="login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
